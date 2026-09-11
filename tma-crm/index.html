@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>iMind CRM</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5; color: #333; line-height: 1.4;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; padding: 16px; position: sticky; top: 0; z-index: 100;
+        }
+        .header h1 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+        .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-group { flex: 1; min-width: 100px; }
+        .filter-group label { display: block; font-size: 11px; opacity: 0.9; margin-bottom: 4px; }
+        .filter-group select, .filter-group input {
+            width: 100%; padding: 8px 10px; border: none; border-radius: 6px;
+            font-size: 13px; background: rgba(255,255,255,0.95);
+        }
+        .filters-row2 { display: flex; gap: 8px; margin-top: 8px; align-items: flex-end; }
+        .filters-row2 .filter-group { flex: 1; }
+        .btn-clear {
+            padding: 8px 12px; border: none; border-radius: 6px;
+            background: rgba(255,255,255,0.2); color: white; cursor: pointer; font-size: 12px;
+            white-space: nowrap;
+        }
+        .stats { display: flex; gap: 12px; padding: 12px 16px; background: white; border-bottom: 1px solid #e0e0e0; overflow-x: auto; }
+        .stat-item { text-align: center; min-width: 60px; }
+        .stat-value { font-size: 20px; font-weight: 700; color: #667eea; }
+        .stat-label { font-size: 10px; color: #888; text-transform: uppercase; }
+        
+        /* Table container - scrollable */
+        .table-container {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: calc(100vh - 220px);
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            table-layout: auto;
+        }
+        
+        /* Sticky header */
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        thead th {
+            background: #667eea;
+            color: white;
+            padding: 10px 6px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+        thead th:last-child { border-right: none; }
+        
+        /* Body rows */
+        tbody tr {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.15s;
+        }
+        tbody tr:hover { background: #f5f5ff; }
+        tbody tr:nth-child(even) { background: #fafafa; }
+        tbody tr:nth-child(even):hover { background: #f0f0ff; }
+        
+        tbody td {
+            padding: 10px 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-right: 1px solid #e0e0e0;
+        }
+        tbody td:last-child { border-right: none; }
+        
+        /* Column widths - fixed */
+        .col-id { width: 60px; }
+        .col-name { width: 120px; }
+        .col-industry { width: 60px; }
+        .col-contact { width: 80px; }
+        .col-date { width: 75px; }
+        .col-source { width: 60px; }
+        .col-pain { width: 120px; }
+        .col-solution { width: 120px; }
+        .col-value { width: 80px; }
+        .col-coc1 { width: 80px; }
+        .col-coc2 { width: 80px; }
+        .col-stage { width: 85px; }
+        .col-next { width: 100px; }
+        .col-deadline { width: 75px; }
+        .col-ghichu { width: 80px; }
+        
+        /* First column (ID) bold in body */
+        .col-id {
+            font-family: monospace;
+            color: #666;
+        }
+        
+        /* Second column (Name) bold */
+        .col-name {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        /* Stage badges */
+        .stage-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .stage-Lead { background: #f5f5f5; color: #666; }
+        .stage-Tư\ vấn { background: #e3f2fd; color: #1565c0; }
+        .stage-Báo\ giá { background: #fff3e0; color: #e65100; }
+        .stage-Ký { background: #e8f5e9; color: #2e7d32; }
+        .stage-Cọc\ đợt\ 1 { background: #f1f8e9; color: #558b2f; }
+        .stage-Đang\ triển\ khai { background: #e0f7fa; color: #00838f; }
+        .stage-Trả\ đợt\ 2 { background: #e0f2f1; color: #00695c; }
+        .stage-Hoàn\ thành\ trả\ đợt\ 2 { background: #e8f5e9; color: #2e7d32; }
+        .stage-Tái\ ký { background: #fce4ec; color: #c2185b; }
+        
+        /* Money formatting */
+        .money { font-family: monospace; text-align: right; }
+        
+        /* Empty & loading */
+        .loading { text-align: center; padding: 40px; color: #888; }
+        .spinner { width: 30px; height: 30px; border: 3px solid #e0e0e0; border-top-color: #667eea; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .empty-state { text-align: center; padding: 40px; color: #888; }
+        .error-msg { background: #ffebee; color: #c62828; padding: 12px; border-radius: 8px; margin: 12px; font-size: 12px; }
+        
+        /* Refresh button */
+        .refresh-btn { position: fixed; bottom: 20px; right: 20px; width: 48px; height: 48px; border-radius: 50%; background: #667eea; color: white; border: none; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(102,126,234,0.4); z-index: 100; }
+        .last-updated { text-align: center; font-size: 11px; color: #888; padding: 8px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 iMind CRM</h1>
+        <div class="filters">
+            <div class="filter-group"><label>Tìm kiếm</label><input type="text" id="searchInput" placeholder="Tên khách hàng..."></div>
+            <div class="filter-group"><label>Giai đoạn</label><select id="stageFilter"><option value="">Tất cả</option></select></div>
+            <div class="filter-group"><label>Ngành</label><select id="industryFilter"><option value="">Tất cả</option></select></div>
+        </div>
+        <div class="filters-row2">
+            <div class="filter-group"><label>Từ ngày</label><input type="date" id="startDate"></div>
+            <div class="filter-group"><label>Đến ngày</label><input type="date" id="endDate"></div>
+            <button class="btn-clear" onclick="clearDateFilter()">✕ Xóa lọc</button>
+        </div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="table-container" id="tableContainer">
+        <div class="loading"><div class="spinner"></div><p>Đang tải dữ liệu...</p></div>
+    </div>
+    <div class="last-updated" id="lastUpdated"></div>
+    <button class="refresh-btn" onclick="loadData()">🔄</button>
+    
+    <script>
+        const CRM_DATA_URL = 'https://raw.githubusercontent.com/imindvietnam-dotcom/CRM_telegram_hermes/main/crm-imind-clients.md';
+        const AUTO_REFRESH_MS = 300000;
+        let allClients = [];
+        
+        // Parse markdown table - robust version
+        function parseMarkdownTable(md) {
+            const lines = md.split('\n').filter(l => l.trim());
+            const tableLines = [];
+            
+            for (const line of lines) {
+                if (line.trim().startsWith('|') && line.includes('|')) {
+                    if (line.match(/^\|[\s\-:|]+\|$/)) continue;
+                    tableLines.push(line);
+                }
+            }
+            
+            if (tableLines.length < 2) return [];
+            
+            // Parse a line into cells
+            function parseLine(line) {
+                // Remove all leading | and whitespace, then all trailing | and whitespace
+                line = line.replace(/^\|+\s*/, '').replace(/\s*\|+$/, '');
+                // Split by | and trim each cell
+                return line.split('|').map(c => c.trim());
+            }
+            
+            const headers = parseLine(tableLines[0]);
+            const rows = [];
+            
+            for (let i = 1; i < tableLines.length; i++) {
+                const cells = parseLine(tableLines[i]);
+                // Only accept rows with matching cell count
+                if (cells.length === headers.length) {
+                    const row = {};
+                    headers.forEach((h, idx) => {
+                        row[h] = cells[idx];
+                    });
+                    rows.push(row);
+                }
+            }
+            
+            return rows;
+        }
+        
+        async function loadData() {
+            const container = document.getElementById('tableContainer');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Đang tải dữ liệu...</p></div>';
+            
+            try {
+                let md = null;
+                try {
+                    const response = await fetch(CRM_DATA_URL + '?t=' + Date.now());
+                    if (response.ok) {
+                        md = await response.text();
+                    }
+                } catch (e) {
+                    console.warn('Fetch error:', e);
+                }
+                
+                if (!md || md.trim().length < 50) {
+                    console.warn('Using fallback data');
+                    md = getFallbackData();
+                }
+                
+                allClients = parseMarkdownTable(md);
+                
+                if (allClients.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><p>Không tìm thấy dữ liệu</p></div>';
+                    return;
+                }
+                
+                populateFilters();
+                renderStats();
+                renderTable();
+                updateTimestamp();
+                
+                setTimeout(loadData, AUTO_REFRESH_MS);
+                
+            } catch (error) {
+                container.innerHTML = `<div class="error-msg">Lỗi: ${error.message}</div>`;
+            }
+        }
+        
+        // Fallback data
+        function getFallbackData() {
+            return `# CRM — iMind AI Marketing
+| ID | Tên khách hàng | Ngành | Người liên hệ | Ngày tiếp nhận | Source | Nỗi đau | Giải pháp | Giá trị hợp đồng (vnđ) | Cọc đợt 1 (vnđ) | Trả đợt 2 (vnđ) | Giai đoạn | Next action | Deadline | Nội dung triển khai | Ghi chú |
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| THL-001 | Thành Lợi DentalLab | Y tế | — | 10/09/2026 | Referral | Website sập — không công bố được giấy tờ nhập khẩu, chứng nhận Sở Y tế | 1. Ngắn hạn: Xy website labothanhloi.com + SEO 90/100 + tra cứu bảo hành (mã SP → thời gian BH, chi tiết, hóa đơn) + contact form tự động gửi Zalo/Telegram | — | — | — | Lead | Thu thập thông tin chi tiết, gửi brief cho Dev | — | — | FB page |
+| THL-001 | Thành Lợi DentalLab | Y tế | — | 10/09/2026 | Referral | Website sập — không công bố được giấy tờ nhập khẩu, chứng nhận Sở Y tế | 2. Dài hạn: AI Agent hành chính — tương tự như của Đông Bắc | — | — | — | Lead | Chờ triển khai xong Website | — | — | FB page |
+| TYH-001 | TY Health Supplements | Y tế | — | 09/09/2026 | — | Kênh nội dung lộn xộn, không định hướng rõ ràng. Fanpage Facebook bị flag bài, tắt đề xuất không rõ nguyên nhn | 1. Content social: 2 Fanpage vệ tinh (TPCN cho bà mẹ & trẻ sơ sinh + TPCN cho người cao tuổi), 2 gói 15 bài/tháng - 2.5 triệu/gói. Content chuẩn guideline cho Fanpage chính | — | — | — | Lead | Thu thập thông tin chi tiết | — | — | Fanpage FB |
+| TYH-001 | TY Health Supplements | Y tế | — | 09/09/2026 | — | Kênh nội dung lộn xộn, không định hướng rõ ràng. Fanpage Facebook bị flag bài, tắt đề xuất không rõ nguyên nhn | 2. Video AI Marketing: 300 video (30-50s) drama tình huống hàng ngày, đăng TikTok tạo độ phủ. 2 video/ngày x 30 ngày = 60 video/tháng → 300 video/5 tháng. Có thể thay Avatar đại lý. 130.000 VNĐ/video | — | — | — | Lead | Thu thập thông tin chi tiết | — | — | Fanpage FB |`;
+        }
+        
+        function populateFilters() {
+            const stageFilter = document.getElementById('stageFilter');
+            const industryFilter = document.getElementById('industryFilter');
+            const stages = [...new Set(allClients.map(c => c['Giai đoạn']).filter(Boolean))];
+            const industries = [...new Set(allClients.map(c => c['Ngành']).filter(Boolean))];
+            
+            stageFilter.innerHTML = '<option value="">Tất cả</option>' + stages.map(s => `<option value="${s}">${s}</option>`).join('');
+            industryFilter.innerHTML = '<option value="">Tất cả</option>' + industries.map(i => `<option value="${i}">${i}</option>`).join('');
+        }
+        
+        function renderStats() {
+            const stats = document.getElementById('stats');
+            const total = allClients.length;
+            const stages = {};
+            allClients.forEach(c => {
+                const stage = c['Giai đoạn'] || 'Unknown';
+                stages[stage] = (stages[stage] || 0) + 1;
+            });
+            
+            let html = `<div class="stat-item"><div class="stat-value">${total}</div><div class="stat-label">Tổng</div></div>`;
+            const sortedStages = Object.entries(stages).sort((a, b) => b[1] - a[1]).slice(0, 4);
+            for (const [stage, count] of sortedStages) {
+                html += `<div class="stat-item"><div class="stat-value">${count}</div><div class="stat-label">${stage}</div></div>`;
+            }
+            stats.innerHTML = html;
+        }
+        
+        function renderTable() {
+            const container = document.getElementById('tableContainer');
+            const filtered = getFilteredClients();
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>Không tìm thấy khách hàng</p></div>';
+                return;
+            }
+            
+            // Get headers from first row keys
+            const headers = Object.keys(filtered[0]);
+            
+            let html = '<table>';
+            
+            // Header
+            html += '<thead><tr>';
+            headers.forEach(h => {
+                html += `<th>${h}</th>`;
+            });
+            html += '</tr></thead>';
+            
+            // Body
+            html += '<tbody>';
+            filtered.forEach(c => {
+                html += '<tr>';
+                headers.forEach(h => {
+                    let val = c[h] || '';
+                    // Special formatting for stage column
+                    if (h === 'Giai đoạn' && val) {
+                        const stageClass = 'stage-' + val.replace(/\s+/g, '\\ ');
+                        html += `<td><span class="stage-badge ${stageClass}">${val}</span></td>`;
+                    } else if (h.includes('vnđ') && val && val !== '—') {
+                        html += `<td class="money">${formatMoney(val)}</td>`;
+                    } else {
+                        html += `<td>${val}</td>`;
+                    }
+                });
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            
+            container.innerHTML = html;
+        }
+        
+        function getFilteredClients() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const stage = document.getElementById('stageFilter').value;
+            const industry = document.getElementById('industryFilter').value;
+            const startDateStr = document.getElementById('startDate').value;
+            const endDateStr = document.getElementById('endDate').value;
+            
+            return allClients.filter(c => {
+                const matchSearch = !search || (c['Tên khách hàng'] && c['Tên khách hàng'].toLowerCase().includes(search)) || (c['ID'] && c['ID'].toLowerCase().includes(search));
+                const matchStage = !stage || c['Giai đoạn'] === stage;
+                const matchIndustry = !industry || c['Ngành'] === industry;
+                
+                let matchDate = true;
+                if (startDateStr || endDateStr) {
+                    const dateStr = c['Ngày tiếp nhận'];
+                    if (dateStr && dateStr.includes('/')) {
+                        const parts = dateStr.split('/');
+                        if (parts.length === 3) {
+                            const day = parseInt(parts[0]);
+                            const month = parseInt(parts[1]);
+                            const year = parseInt(parts[2]);
+                            if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                                const clientDate = new Date(year, month - 1, day);
+                                if (startDateStr) {
+                                    const sd = new Date(startDateStr);
+                                    sd.setHours(0, 0, 0, 0);
+                                    if (clientDate < sd) matchDate = false;
+                                }
+                                if (endDateStr) {
+                                    const ed = new Date(endDateStr);
+                                    ed.setHours(23, 59, 59, 999);
+                                    if (clientDate > ed) matchDate = false;
+                                }
+                            } else {
+                                matchDate = false;
+                            }
+                        } else {
+                            matchDate = false;
+                        }
+                    } else {
+                        matchDate = false;
+                    }
+                }
+                
+                return matchSearch && matchStage && matchIndustry && matchDate;
+            });
+        }
+        
+        function clearDateFilter() {
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            renderTable();
+        }
+        
+        function truncate(str, maxLen) {
+            if (!str) return '';
+            if (str.length <= maxLen) return str;
+            return str.substring(0, maxLen) + '...';
+        }
+        
+        function formatMoney(value) {
+            if (!value || value === '—' || value === '') return '—';
+            const num = parseInt(value.toString().replace(/[.,]/g, ''));
+            if (isNaN(num)) return value;
+            return num.toLocaleString('vi-VN');
+        }
+        
+        function updateTimestamp() {
+            document.getElementById('lastUpdated').textContent = 'Cập nhật: ' + new Date().toLocaleTimeString('vi-VN');
+        }
+        
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', renderTable);
+        document.getElementById('stageFilter').addEventListener('change', renderTable);
+        document.getElementById('industryFilter').addEventListener('change', renderTable);
+        document.getElementById('startDate').addEventListener('change', renderTable);
+        document.getElementById('endDate').addEventListener('change', renderTable);
+        
+        // Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+        }
+        
+        loadData();
+    </script>
+</body>
+</html>
