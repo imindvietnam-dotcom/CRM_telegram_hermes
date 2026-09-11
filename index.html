@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -48,7 +47,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 12px;
-            min-width: 1200px; /* Force horizontal scroll on small screens */
+            table-layout: auto;
         }
         
         /* Sticky header */
@@ -60,10 +59,12 @@
         thead th {
             background: #667eea;
             color: white;
-            padding: 10px 8px;
+            padding: 10px 6px;
             text-align: left;
             font-weight: 600;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             border-right: 1px solid rgba(255,255,255,0.2);
         }
         thead th:last-child { border-right: none; }
@@ -79,31 +80,42 @@
         tbody tr:nth-child(even):hover { background: #f0f0ff; }
         
         tbody td {
-            padding: 10px 8px;
+            padding: 10px 6px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 200px;
             border-right: 1px solid #e0e0e0;
         }
         tbody td:last-child { border-right: none; }
         
-        /* Column specific widths */
-        .col-id { width: 70px; }
-        .col-name { width: 150px; font-weight: 600; }
-        .col-industry { width: 80px; }
-        .col-contact { width: 100px; }
-        .col-date { width: 90px; }
-        .col-source { width: 80px; }
-        .col-pain { width: 200px; white-space: normal; }
-        .col-solution { width: 200px; white-space: normal; }
-        .col-value { width: 100px; text-align: right; }
-        .col-coc1 { width: 100px; text-align: right; }
-        .col-coc2 { width: 100px; text-align: right; }
-        .col-stage { width: 100px; }
-        .col-next { width: 120px; }
-        .col-deadline { width: 90px; }
-        .col-ghichu { width: 100px; }
+        /* Column widths - fixed */
+        .col-id { width: 60px; }
+        .col-name { width: 120px; }
+        .col-industry { width: 60px; }
+        .col-contact { width: 80px; }
+        .col-date { width: 75px; }
+        .col-source { width: 60px; }
+        .col-pain { width: 120px; }
+        .col-solution { width: 120px; }
+        .col-value { width: 80px; }
+        .col-coc1 { width: 80px; }
+        .col-coc2 { width: 80px; }
+        .col-stage { width: 85px; }
+        .col-next { width: 100px; }
+        .col-deadline { width: 75px; }
+        .col-ghichu { width: 80px; }
+        
+        /* First column (ID) bold in body */
+        .col-id {
+            font-family: monospace;
+            color: #666;
+        }
+        
+        /* Second column (Name) bold */
+        .col-name {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
         
         /* Stage badges */
         .stage-badge {
@@ -165,7 +177,7 @@
         const AUTO_REFRESH_MS = 300000;
         let allClients = [];
         
-        // Parse markdown table
+        // Parse markdown table - robust version
         function parseMarkdownTable(md) {
             const lines = md.split('\n').filter(l => l.trim());
             const tableLines = [];
@@ -179,18 +191,24 @@
             
             if (tableLines.length < 2) return [];
             
-            const headers = tableLines[0].split('|').map(h => h.trim()).filter(h => h);
+            // Parse a line into cells
+            function parseLine(line) {
+                // Remove all leading | and whitespace, then all trailing | and whitespace
+                line = line.replace(/^\|+\s*/, '').replace(/\s*\|+$/, '');
+                // Split by | and trim each cell
+                return line.split('|').map(c => c.trim());
+            }
+            
+            const headers = parseLine(tableLines[0]);
             const rows = [];
             
             for (let i = 1; i < tableLines.length; i++) {
-                const cells = tableLines[i].split('|').map(c => c.trim());
-                if (cells.length > 0 && cells[0] === '') cells.shift();
-                if (cells.length > 0 && cells[cells.length - 1] === '') cells.pop();
-                
-                if (cells.length >= headers.length) {
+                const cells = parseLine(tableLines[i]);
+                // Only accept rows with matching cell count
+                if (cells.length === headers.length) {
                     const row = {};
                     headers.forEach((h, idx) => {
-                        row[h] = cells[idx] || '';
+                        row[h] = cells[idx];
                     });
                     rows.push(row);
                 }
@@ -285,49 +303,34 @@
                 return;
             }
             
+            // Get headers from first row keys
+            const headers = Object.keys(filtered[0]);
+            
             let html = '<table>';
             
             // Header
             html += '<thead><tr>';
-            html += '<th class="col-id">ID</th>';
-            html += '<th class="col-name">Tên khách hàng</th>';
-            html += '<th class="col-industry">Ngành</th>';
-            html += '<th class="col-contact">Người liên hệ</th>';
-            html += '<th class="col-date">Ngày TN</th>';
-            html += '<th class="col-source">Source</th>';
-            html += '<th class="col-pain">Nỗi đau</th>';
-            html += '<th class="col-solution">Giải pháp</th>';
-            html += '<th class="col-value">Giá trị HĐ</th>';
-            html += '<th class="col-coc1">Cọc 1</th>';
-            html += '<th class="col-coc2">Trả 2</th>';
-            html += '<th class="col-stage">Giai đoạn</th>';
-            html += '<th class="col-next">Next action</th>';
-            html += '<th class="col-deadline">Deadline</th>';
-            html += '<th class="col-ghichu">Ghi chú</th>';
+            headers.forEach(h => {
+                html += `<th>${h}</th>`;
+            });
             html += '</tr></thead>';
             
             // Body
             html += '<tbody>';
             filtered.forEach(c => {
-                const stage = c['Giai đoạn'] || '';
-                const stageClass = 'stage-' + stage.replace(/\s+/g, '\\ ');
-                
                 html += '<tr>';
-                html += `<td class="col-id">${c['ID'] || ''}</td>`;
-                html += `<td class="col-name">${c['Tên khách hàng'] || '—'}</td>`;
-                html += `<td class="col-industry">${c['Ngành'] || '—'}</td>`;
-                html += `<td class="col-contact">${c['Người liên hệ'] || '—'}</td>`;
-                html += `<td class="col-date">${c['Ngày tiếp nhận'] || ''}</td>`;
-                html += `<td class="col-source">${c['Source'] || ''}</td>`;
-                html += `<td class="col-pain" title="${c['Nỗi đau'] || ''}">${truncate(c['Nỗi đau'], 50)}</td>`;
-                html += `<td class="col-solution" title="${c['Giải pháp'] || ''}">${truncate(c['Giải pháp'], 50)}</td>`;
-                html += `<td class="col-value money">${formatMoney(c['Giá trị hợp đồng (vnđ)'])}</td>`;
-                html += `<td class="col-coc1 money">${formatMoney(c['Cọc đợt 1 (vnđ)'])}</td>`;
-                html += `<td class="col-coc2 money">${formatMoney(c['Trả đợt 2 (vnđ)'])}</td>`;
-                html += `<td class="col-stage"><span class="stage-badge ${stageClass}">${stage}</span></td>`;
-                html += `<td class="col-next">${c['Next action'] || ''}</td>`;
-                html += `<td class="col-deadline">${c['Deadline'] || ''}</td>`;
-                html += `<td class="col-ghichu">${c['Ghi chú'] || ''}</td>`;
+                headers.forEach(h => {
+                    let val = c[h] || '';
+                    // Special formatting for stage column
+                    if (h === 'Giai đoạn' && val) {
+                        const stageClass = 'stage-' + val.replace(/\s+/g, '\\ ');
+                        html += `<td><span class="stage-badge ${stageClass}">${val}</span></td>`;
+                    } else if (h.includes('vnđ') && val && val !== '—') {
+                        html += `<td class="money">${formatMoney(val)}</td>`;
+                    } else {
+                        html += `<td>${val}</td>`;
+                    }
+                });
                 html += '</tr>';
             });
             html += '</tbody></table>';
