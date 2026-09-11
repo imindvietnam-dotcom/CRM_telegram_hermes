@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -5,151 +6,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>iMind CRM</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            line-height: 1.4;
-            -webkit-font-smoothing: antialiased;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5; color: #333; line-height: 1.4;
         }
-        
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 16px;
+            color: white; padding: 16px; position: sticky; top: 0; z-index: 100;
+        }
+        .header h1 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+        .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-group { flex: 1; min-width: 100px; }
+        .filter-group label { display: block; font-size: 11px; opacity: 0.9; margin-bottom: 4px; }
+        .filter-group select, .filter-group input {
+            width: 100%; padding: 8px 10px; border: none; border-radius: 6px;
+            font-size: 13px; background: rgba(255,255,255,0.95);
+        }
+        .filters-row2 { display: flex; gap: 8px; margin-top: 8px; align-items: flex-end; }
+        .filters-row2 .filter-group { flex: 1; }
+        .btn-clear {
+            padding: 8px 12px; border: none; border-radius: 6px;
+            background: rgba(255,255,255,0.2); color: white; cursor: pointer; font-size: 12px;
+            white-space: nowrap;
+        }
+        .stats { display: flex; gap: 12px; padding: 12px 16px; background: white; border-bottom: 1px solid #e0e0e0; overflow-x: auto; }
+        .stat-item { text-align: center; min-width: 60px; }
+        .stat-value { font-size: 20px; font-weight: 700; color: #667eea; }
+        .stat-label { font-size: 10px; color: #888; text-transform: uppercase; }
+        
+        /* Table container - scrollable */
+        .table-container {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: calc(100vh - 220px);
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            min-width: 1200px; /* Force horizontal scroll on small screens */
+        }
+        
+        /* Sticky header */
+        thead {
             position: sticky;
             top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 50;
         }
-        
-        .header h1 {
-            font-size: 18px;
+        thead th {
+            background: #667eea;
+            color: white;
+            padding: 10px 8px;
+            text-align: left;
             font-weight: 600;
-            margin-bottom: 12px;
+            white-space: nowrap;
+            border-right: 1px solid rgba(255,255,255,0.2);
         }
+        thead th:last-child { border-right: none; }
         
-        .filters {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .filter-group {
-            flex: 1;
-            min-width: 120px;
-        }
-        
-        .filter-group label {
-            display: block;
-            font-size: 11px;
-            opacity: 0.9;
-            margin-bottom: 4px;
-        }
-        
-        .filter-group select,
-        .filter-group input {
-            width: 100%;
-            padding: 8px 10px;
-            border: none;
-            border-radius: 6px;
-            font-size: 13px;
-            background: rgba(255,255,255,0.95);
-            color: #333;
-        }
-        
-        .stats {
-            display: flex;
-            gap: 12px;
-            padding: 12px 16px;
+        /* Body rows */
+        tbody tr {
             background: white;
             border-bottom: 1px solid #e0e0e0;
-            overflow-x: auto;
+            transition: background 0.15s;
         }
+        tbody tr:hover { background: #f5f5ff; }
+        tbody tr:nth-child(even) { background: #fafafa; }
+        tbody tr:nth-child(even):hover { background: #f0f0ff; }
         
-        .stat-item {
-            text-align: center;
-            min-width: 60px;
+        tbody td {
+            padding: 10px 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+            border-right: 1px solid #e0e0e0;
         }
+        tbody td:last-child { border-right: none; }
         
-        .stat-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: #667eea;
-        }
+        /* Column specific widths */
+        .col-id { width: 70px; }
+        .col-name { width: 150px; font-weight: 600; }
+        .col-industry { width: 80px; }
+        .col-contact { width: 100px; }
+        .col-date { width: 90px; }
+        .col-source { width: 80px; }
+        .col-pain { width: 200px; white-space: normal; }
+        .col-solution { width: 200px; white-space: normal; }
+        .col-value { width: 100px; text-align: right; }
+        .col-coc1 { width: 100px; text-align: right; }
+        .col-coc2 { width: 100px; text-align: right; }
+        .col-stage { width: 100px; }
+        .col-next { width: 120px; }
+        .col-deadline { width: 90px; }
+        .col-ghichu { width: 100px; }
         
-        .stat-label {
+        /* Stage badges */
+        .stage-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
             font-size: 10px;
-            color: #888;
-            text-transform: uppercase;
-        }
-        
-        .content {
-            padding: 12px;
-        }
-        
-        .client-card {
-            background: white;
-            border-radius: 10px;
-            padding: 14px;
-            margin-bottom: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-            border-left: 4px solid #667eea;
-        }
-        
-        .client-card[data-stage="Lead"] { border-left-color: #9e9e9e; }
-        .client-card[data-stage="Tư vấn"] { border-left-color: #2196f3; }
-        .client-card[data-stage="Báo giá"] { border-left-color: #ff9800; }
-        .client-card[data-stage="Ký"] { border-left-color: #4caf50; }
-        .client-card[data-stage="Cọc đợt 1"] { border-left-color: #8bc34a; }
-        .client-card[data-stage="Đang triển khai"] { border-left-color: #00bcd4; }
-        .client-card[data-stage="Trả đợt 2"] { border-left-color: #009688; }
-        .client-card[data-stage="Hoàn thành trả đợt 2"] { border-left-color: #4caf50; }
-        .client-card[data-stage="Tái ký"] { border-left-color: #e91e63; }
-        
-        .client-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
-        }
-        
-        .client-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1a1a1a;
-        }
-        
-        .client-id {
-            font-size: 11px;
-            color: #888;
-            font-family: monospace;
-        }
-        
-        .client-industry {
-            display: inline-block;
-            font-size: 11px;
-            padding: 2px 8px;
-            background: #e3f2fd;
-            color: #1565c0;
-            border-radius: 10px;
-            margin-bottom: 8px;
-        }
-        
-        .client-stage {
-            display: inline-block;
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 10px;
             font-weight: 500;
+            white-space: nowrap;
         }
-        
         .stage-Lead { background: #f5f5f5; color: #666; }
         .stage-Tư\ vấn { background: #e3f2fd; color: #1565c0; }
         .stage-Báo\ giá { background: #fff3e0; color: #e65100; }
@@ -160,164 +124,54 @@
         .stage-Hoàn\ thành\ trả\ đợt\ 2 { background: #e8f5e9; color: #2e7d32; }
         .stage-Tái\ ký { background: #fce4ec; color: #c2185b; }
         
-        .client-details {
-            font-size: 12px;
-            color: #666;
-        }
+        /* Money formatting */
+        .money { font-family: monospace; text-align: right; }
         
-        .client-details p {
-            margin-bottom: 4px;
-            display: flex;
-        }
+        /* Empty & loading */
+        .loading { text-align: center; padding: 40px; color: #888; }
+        .spinner { width: 30px; height: 30px; border: 3px solid #e0e0e0; border-top-color: #667eea; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .empty-state { text-align: center; padding: 40px; color: #888; }
+        .error-msg { background: #ffebee; color: #c62828; padding: 12px; border-radius: 8px; margin: 12px; font-size: 12px; }
         
-        .client-details strong {
-            min-width: 80px;
-            color: #444;
-        }
-        
-        .client-pain {
-            margin-top: 8px;
-            padding: 8px;
-            background: #fafafa;
-            border-radius: 6px;
-            font-size: 12px;
-        }
-        
-        .client-pain-title {
-            font-weight: 600;
-            color: #e53935;
-            margin-bottom: 4px;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #888;
-        }
-        
-        .spinner {
-            width: 30px;
-            height: 30px;
-            border: 3px solid #e0e0e0;
-            border-top-color: #667eea;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 12px;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: #888;
-        }
-        
-        .empty-state-icon {
-            font-size: 40px;
-            margin-bottom: 12px;
-        }
-        
-        .refresh-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: #667eea;
-            color: white;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-        }
-        
-        .refresh-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .last-updated {
-            text-align: center;
-            font-size: 11px;
-            color: #888;
-            padding: 8px;
-        }
+        /* Refresh button */
+        .refresh-btn { position: fixed; bottom: 20px; right: 20px; width: 48px; height: 48px; border-radius: 50%; background: #667eea; color: white; border: none; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(102,126,234,0.4); z-index: 100; }
+        .last-updated { text-align: center; font-size: 11px; color: #888; padding: 8px; }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>📊 iMind CRM</h1>
         <div class="filters">
-            <div class="filter-group">
-                <label>Tìm kiếm</label>
-                <input type="text" id="searchInput" placeholder="Tên khách hàng...">
-            </div>
-            <div class="filter-group">
-                <label>Giai đoạn</label>
-                <select id="stageFilter">
-                    <option value="">Tất cả</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Ngành</label>
-                <select id="industryFilter">
-                    <option value="">Tất cả</option>
-                </select>
-            </div>
+            <div class="filter-group"><label>Tìm kiếm</label><input type="text" id="searchInput" placeholder="Tên khách hàng..."></div>
+            <div class="filter-group"><label>Giai đoạn</label><select id="stageFilter"><option value="">Tất cả</option></select></div>
+            <div class="filter-group"><label>Ngành</label><select id="industryFilter"><option value="">Tất cả</option></select></div>
+        </div>
+        <div class="filters-row2">
+            <div class="filter-group"><label>Từ ngày</label><input type="date" id="startDate"></div>
+            <div class="filter-group"><label>Đến ngày</label><input type="date" id="endDate"></div>
+            <button class="btn-clear" onclick="clearDateFilter()">✕ Xóa lọc</button>
         </div>
     </div>
-    
     <div class="stats" id="stats"></div>
-    
-    <div class="content" id="content">
-        <div class="loading">
-            <div class="spinner"></div>
-            <p>Đang tải dữ liệu...</p>
-        </div>
+    <div class="table-container" id="tableContainer">
+        <div class="loading"><div class="spinner"></div><p>Đang tải dữ liệu...</p></div>
     </div>
-    
     <div class="last-updated" id="lastUpdated"></div>
-    
-    <button class="refresh-btn" onclick="loadData()" title="Làm mới">🔄</button>
+    <button class="refresh-btn" onclick="loadData()">🔄</button>
     
     <script>
-        // ============================================
-        // CONFIGURATION
-        // ============================================
-        // URL đến file CRM markdown (GitHub raw link)
-        // Thay đổi URL này thành link raw từ GitHub repo của bạn
         const CRM_DATA_URL = 'https://raw.githubusercontent.com/imindvietnam-dotcom/CRM_telegram_hermes/main/crm-imind-clients.md';
-        
-        // Hoặc dùng API endpoint nếu có
-        // const CRM_DATA_URL = 'https://imind.vn/api/crm-data';
-        
-        // Auto-refresh mỗi 5 phút (300000 ms)
         const AUTO_REFRESH_MS = 300000;
-        
-        // ============================================
-        // STATE
-        // ============================================
         let allClients = [];
-        let filteredClients = [];
         
-        // ============================================
-        // PARSE MARKDOWN TABLE
-        // ============================================
+        // Parse markdown table
         function parseMarkdownTable(md) {
             const lines = md.split('\n').filter(l => l.trim());
             const tableLines = [];
-            let inTable = false;
             
             for (const line of lines) {
-                if (line.includes('|') && line.trim().startsWith('|')) {
-                    // Skip separator line (|---|---|)
+                if (line.trim().startsWith('|') && line.includes('|')) {
                     if (line.match(/^\|[\s\-:|]+\|$/)) continue;
                     tableLines.push(line);
                 }
@@ -325,19 +179,13 @@
             
             if (tableLines.length < 2) return [];
             
-            // Parse header
-            const headers = tableLines[0]
-                .split('|')
-                .map(h => h.trim())
-                .filter(h => h);
-            
-            // Parse rows
+            const headers = tableLines[0].split('|').map(h => h.trim()).filter(h => h);
             const rows = [];
+            
             for (let i = 1; i < tableLines.length; i++) {
-                const cells = tableLines[i]
-                    .split('|')
-                    .map(c => c.trim())
-                    .filter(c => c);
+                const cells = tableLines[i].split('|').map(c => c.trim());
+                if (cells.length > 0 && cells[0] === '') cells.shift();
+                if (cells.length > 0 && cells[cells.length - 1] === '') cells.pop();
                 
                 if (cells.length >= headers.length) {
                     const row = {};
@@ -351,217 +199,226 @@
             return rows;
         }
         
-        // ============================================
-        // FETCH DATA
-        // ============================================
         async function loadData() {
-            const content = document.getElementById('content');
-            content.innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Đang tải dữ liệu...</p>
-                </div>
-            `;
+            const container = document.getElementById('tableContainer');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Đang tải dữ liệu...</p></div>';
             
             try {
-                // Try fetching from URL first
-                let md = '';
+                let md = null;
                 try {
                     const response = await fetch(CRM_DATA_URL + '?t=' + Date.now());
                     if (response.ok) {
                         md = await response.text();
                     }
                 } catch (e) {
-                    console.warn('Fetch failed, using fallback data');
+                    console.warn('Fetch error:', e);
                 }
                 
-                // Fallback: use embedded data if fetch fails
-                if (!md) {
+                if (!md || md.trim().length < 50) {
+                    console.warn('Using fallback data');
                     md = getFallbackData();
                 }
                 
                 allClients = parseMarkdownTable(md);
-                filteredClients = [...allClients];
+                
+                if (allClients.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><p>Không tìm thấy dữ liệu</p></div>';
+                    return;
+                }
                 
                 populateFilters();
                 renderStats();
-                renderClients();
+                renderTable();
                 updateTimestamp();
                 
-                // Setup auto-refresh
                 setTimeout(loadData, AUTO_REFRESH_MS);
                 
             } catch (error) {
-                content.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">⚠️</div>
-                        <p>Không thể tải dữ liệu</p>
-                        <p style="font-size:11px;color:#aaa;">${error.message}</p>
-                    </div>
-                `;
+                container.innerHTML = `<div class="error-msg">Lỗi: ${error.message}</div>`;
             }
         }
         
-        // ============================================
-        // FALLBACK DATA (embedded)
-        // ============================================
+        // Fallback data
         function getFallbackData() {
-            return `| ID | Tên khách hàng | Ngành | Người liên hệ | Ngày tiếp nhận | Source | Nỗi đau | Giải pháp | Giá trị hợp đồng (vnđ) | Cọc đợt 1 (vnđ) | Trả đợt 2 (vnđ) | Giai đoạn | Next action | Deadline | Nội dung triển khai | Ghi chú |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| THL-001 | Thành Lợi DentalLab | Y tế | — | 10/09/2026 | Referral | Website sập — không công bố được giấy tờ nhập khẩu, chứng nhận Sở Y tế | 1. Ngắn hạn: Xây dựng website + SEO 90/100 + tra cứu bảo hành + contact form gửi Telegram/Zalo | — | — | — | Lead | Thu thập thông tin chi tiết, gửi brief cho Dev | — | — | FB page |`;
+            return `# CRM — iMind AI Marketing
+| ID | Tên khách hàng | Ngành | Người liên hệ | Ngày tiếp nhận | Source | Nỗi đau | Giải pháp | Giá trị hợp đồng (vnđ) | Cọc đợt 1 (vnđ) | Trả đợt 2 (vnđ) | Giai đoạn | Next action | Deadline | Nội dung triển khai | Ghi chú |
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| THL-001 | Thành Lợi DentalLab | Y tế | — | 10/09/2026 | Referral | Website sập — không công bố được giấy tờ nhập khẩu, chứng nhận Sở Y tế | 1. Ngắn hạn: Xy website labothanhloi.com + SEO 90/100 + tra cứu bảo hành (mã SP → thời gian BH, chi tiết, hóa đơn) + contact form tự động gửi Zalo/Telegram | — | — | — | Lead | Thu thập thông tin chi tiết, gửi brief cho Dev | — | — | FB page |
+| THL-001 | Thành Lợi DentalLab | Y tế | — | 10/09/2026 | Referral | Website sập — không công bố được giấy tờ nhập khẩu, chứng nhận Sở Y tế | 2. Dài hạn: AI Agent hành chính — tương tự như của Đông Bắc | — | — | — | Lead | Chờ triển khai xong Website | — | — | FB page |
+| TYH-001 | TY Health Supplements | Y tế | — | 09/09/2026 | — | Kênh nội dung lộn xộn, không định hướng rõ ràng. Fanpage Facebook bị flag bài, tắt đề xuất không rõ nguyên nhn | 1. Content social: 2 Fanpage vệ tinh (TPCN cho bà mẹ & trẻ sơ sinh + TPCN cho người cao tuổi), 2 gói 15 bài/tháng - 2.5 triệu/gói. Content chuẩn guideline cho Fanpage chính | — | — | — | Lead | Thu thập thông tin chi tiết | — | — | Fanpage FB |
+| TYH-001 | TY Health Supplements | Y tế | — | 09/09/2026 | — | Kênh nội dung lộn xộn, không định hướng rõ ràng. Fanpage Facebook bị flag bài, tắt đề xuất không rõ nguyên nhn | 2. Video AI Marketing: 300 video (30-50s) drama tình huống hàng ngày, đăng TikTok tạo độ phủ. 2 video/ngày x 30 ngày = 60 video/tháng → 300 video/5 tháng. Có thể thay Avatar đại lý. 130.000 VNĐ/video | — | — | — | Lead | Thu thập thông tin chi tiết | — | — | Fanpage FB |`;
         }
         
-        // ============================================
-        // RENDER FUNCTIONS
-        // ============================================
         function populateFilters() {
             const stageFilter = document.getElementById('stageFilter');
             const industryFilter = document.getElementById('industryFilter');
-            
             const stages = [...new Set(allClients.map(c => c['Giai đoạn']).filter(Boolean))];
             const industries = [...new Set(allClients.map(c => c['Ngành']).filter(Boolean))];
             
-            stageFilter.innerHTML = '<option value="">Tất cả</option>' + 
-                stages.map(s => `<option value="${s}">${s}</option>`).join('');
-            
-            industryFilter.innerHTML = '<option value="">Tất cả</option>' + 
-                industries.map(i => `<option value="${i}">${i}</option>`).join('');
+            stageFilter.innerHTML = '<option value="">Tất cả</option>' + stages.map(s => `<option value="${s}">${s}</option>`).join('');
+            industryFilter.innerHTML = '<option value="">Tất cả</option>' + industries.map(i => `<option value="${i}">${i}</option>`).join('');
         }
         
         function renderStats() {
             const stats = document.getElementById('stats');
             const total = allClients.length;
             const stages = {};
-            
             allClients.forEach(c => {
                 const stage = c['Giai đoạn'] || 'Unknown';
                 stages[stage] = (stages[stage] || 0) + 1;
             });
             
-            let html = `
-                <div class="stat-item">
-                    <div class="stat-value">${total}</div>
-                    <div class="stat-label">Tổng</div>
-                </div>
-            `;
-            
-            // Show top stages
+            let html = `<div class="stat-item"><div class="stat-value">${total}</div><div class="stat-label">Tổng</div></div>`;
             const sortedStages = Object.entries(stages).sort((a, b) => b[1] - a[1]).slice(0, 4);
             for (const [stage, count] of sortedStages) {
-                html += `
-                    <div class="stat-item">
-                        <div class="stat-value">${count}</div>
-                        <div class="stat-label">${stage}</div>
-                    </div>
-                `;
+                html += `<div class="stat-item"><div class="stat-value">${count}</div><div class="stat-label">${stage}</div></div>`;
             }
-            
             stats.innerHTML = html;
         }
         
-        function renderClients() {
-            const content = document.getElementById('content');
+        function renderTable() {
+            const container = document.getElementById('tableContainer');
+            const filtered = getFilteredClients();
             
-            if (filteredClients.length === 0) {
-                content.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">🔍</div>
-                        <p>Không tìm thấy khách hàng</p>
-                    </div>
-                `;
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>Không tìm thấy khách hàng</p></div>';
                 return;
             }
             
-            content.innerHTML = filteredClients.map(c => {
+            let html = '<table>';
+            
+            // Header
+            html += '<thead><tr>';
+            html += '<th class="col-id">ID</th>';
+            html += '<th class="col-name">Tên khách hàng</th>';
+            html += '<th class="col-industry">Ngành</th>';
+            html += '<th class="col-contact">Người liên hệ</th>';
+            html += '<th class="col-date">Ngày TN</th>';
+            html += '<th class="col-source">Source</th>';
+            html += '<th class="col-pain">Nỗi đau</th>';
+            html += '<th class="col-solution">Giải pháp</th>';
+            html += '<th class="col-value">Giá trị HĐ</th>';
+            html += '<th class="col-coc1">Cọc 1</th>';
+            html += '<th class="col-coc2">Trả 2</th>';
+            html += '<th class="col-stage">Giai đoạn</th>';
+            html += '<th class="col-next">Next action</th>';
+            html += '<th class="col-deadline">Deadline</th>';
+            html += '<th class="col-ghichu">Ghi chú</th>';
+            html += '</tr></thead>';
+            
+            // Body
+            html += '<tbody>';
+            filtered.forEach(c => {
                 const stage = c['Giai đoạn'] || '';
                 const stageClass = 'stage-' + stage.replace(/\s+/g, '\\ ');
                 
-                return `
-                    <div class="client-card" data-stage="${stage}">
-                        <div class="client-header">
-                            <div>
-                                <div class="client-name">${c['Tên khách hàng'] || '—'}</div>
-                                <div class="client-id">${c['ID'] || ''}</div>
-                            </div>
-                            <span class="client-stage ${stageClass}">${stage}</span>
-                        </div>
-                        <span class="client-industry">${c['Ngành'] || '—'}</span>
-                        <div class="client-details">
-                            ${c['Người liên hệ'] && c['Người liên hệ'] !== '—' ? `<p><strong>Liên hệ:</strong> ${c['Người liên hệ']}</p>` : ''}
-                            ${c['Ngày tiếp nhận'] ? `<p><strong>Ngày TN:</strong> ${c['Ngày tiếp nhận']}</p>` : ''}
-                            ${c['Source'] ? `<p><strong>Source:</strong> ${c['Source']}</p>` : ''}
-                            ${c['Giá trị hợp đồng (vnđ)'] && c['Giá trị hợp đồng (vnđ)'] !== '—' ? `<p><strong>Giá trị:</strong> ${formatMoney(c['Giá trị hợp đồng (vnđ)'])}</p>` : ''}
-                            ${c['Cọc đợt 1 (vnđ)'] && c['Cọc đợt 1 (vnđ)'] !== '—' ? `<p><strong>Cọc 1:</strong> ${formatMoney(c['Cọc đợt 1 (vnđ)'])}</p>` : ''}
-                            ${c['Next action'] ? `<p><strong>Next:</strong> ${c['Next action']}</p>` : ''}
-                            ${c['Deadline'] && c['Deadline'] !== '—' ? `<p><strong>Hạn:</strong> ${c['Deadline']}</p>` : ''}
-                        </div>
-                        ${c['Nỗi đau'] ? `
-                            <div class="client-pain">
-                                <div class="client-pain-title">🔥 Nỗi đau</div>
-                                <div>${c['Nỗi đau']}</div>
-                            </div>
-                        ` : ''}
-                        ${c['Giải pháp'] ? `
-                            <div class="client-pain" style="background:#e8f5e9;">
-                                <div class="client-pain-title" style="color:#2e7d32;">💡 Giải pháp</div>
-                                <div>${c['Giải pháp']}</div>
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('');
+                html += '<tr>';
+                html += `<td class="col-id">${c['ID'] || ''}</td>`;
+                html += `<td class="col-name">${c['Tên khách hàng'] || '—'}</td>`;
+                html += `<td class="col-industry">${c['Ngành'] || '—'}</td>`;
+                html += `<td class="col-contact">${c['Người liên hệ'] || '—'}</td>`;
+                html += `<td class="col-date">${c['Ngày tiếp nhận'] || ''}</td>`;
+                html += `<td class="col-source">${c['Source'] || ''}</td>`;
+                html += `<td class="col-pain" title="${c['Nỗi đau'] || ''}">${truncate(c['Nỗi đau'], 50)}</td>`;
+                html += `<td class="col-solution" title="${c['Giải pháp'] || ''}">${truncate(c['Giải pháp'], 50)}</td>`;
+                html += `<td class="col-value money">${formatMoney(c['Giá trị hợp đồng (vnđ)'])}</td>`;
+                html += `<td class="col-coc1 money">${formatMoney(c['Cọc đợt 1 (vnđ)'])}</td>`;
+                html += `<td class="col-coc2 money">${formatMoney(c['Trả đợt 2 (vnđ)'])}</td>`;
+                html += `<td class="col-stage"><span class="stage-badge ${stageClass}">${stage}</span></td>`;
+                html += `<td class="col-next">${c['Next action'] || ''}</td>`;
+                html += `<td class="col-deadline">${c['Deadline'] || ''}</td>`;
+                html += `<td class="col-ghichu">${c['Ghi chú'] || ''}</td>`;
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            
+            container.innerHTML = html;
         }
         
-        function formatMoney(value) {
-            if (!value || value === '—') return '—';
-            const num = parseInt(value.toString().replace(/[.,]/g, ''));
-            if (isNaN(num)) return value;
-            return num.toLocaleString('vi-VN') + ' vnđ';
-        }
-        
-        function updateTimestamp() {
-            const el = document.getElementById('lastUpdated');
-            const now = new Date();
-            el.textContent = `Cập nhật: ${now.toLocaleTimeString('vi-VN')} - ${now.toLocaleDateString('vi-VN')}`;
-        }
-        
-        // ============================================
-        // FILTER FUNCTIONS
-        // ============================================
-        function applyFilters() {
+        function getFilteredClients() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const stage = document.getElementById('stageFilter').value;
             const industry = document.getElementById('industryFilter').value;
+            const startDateStr = document.getElementById('startDate').value;
+            const endDateStr = document.getElementById('endDate').value;
             
-            filteredClients = allClients.filter(c => {
-                const matchSearch = !search || 
-                    (c['Tên khách hàng'] && c['Tên khách hàng'].toLowerCase().includes(search)) ||
-                    (c['ID'] && c['ID'].toLowerCase().includes(search));
+            return allClients.filter(c => {
+                const matchSearch = !search || (c['Tên khách hàng'] && c['Tên khách hàng'].toLowerCase().includes(search)) || (c['ID'] && c['ID'].toLowerCase().includes(search));
                 const matchStage = !stage || c['Giai đoạn'] === stage;
                 const matchIndustry = !industry || c['Ngành'] === industry;
                 
-                return matchSearch && matchStage && matchIndustry;
+                let matchDate = true;
+                if (startDateStr || endDateStr) {
+                    const dateStr = c['Ngày tiếp nhận'];
+                    if (dateStr && dateStr.includes('/')) {
+                        const parts = dateStr.split('/');
+                        if (parts.length === 3) {
+                            const day = parseInt(parts[0]);
+                            const month = parseInt(parts[1]);
+                            const year = parseInt(parts[2]);
+                            if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                                const clientDate = new Date(year, month - 1, day);
+                                if (startDateStr) {
+                                    const sd = new Date(startDateStr);
+                                    sd.setHours(0, 0, 0, 0);
+                                    if (clientDate < sd) matchDate = false;
+                                }
+                                if (endDateStr) {
+                                    const ed = new Date(endDateStr);
+                                    ed.setHours(23, 59, 59, 999);
+                                    if (clientDate > ed) matchDate = false;
+                                }
+                            } else {
+                                matchDate = false;
+                            }
+                        } else {
+                            matchDate = false;
+                        }
+                    } else {
+                        matchDate = false;
+                    }
+                }
+                
+                return matchSearch && matchStage && matchIndustry && matchDate;
             });
-            
-            renderClients();
         }
         
-        // ============================================
-        // EVENT LISTENERS
-        // ============================================
-        document.getElementById('searchInput').addEventListener('input', applyFilters);
-        document.getElementById('stageFilter').addEventListener('change', applyFilters);
-        document.getElementById('industryFilter').addEventListener('change', applyFilters);
+        function clearDateFilter() {
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            renderTable();
+        }
         
-        // Telegram WebApp integration
+        function truncate(str, maxLen) {
+            if (!str) return '';
+            if (str.length <= maxLen) return str;
+            return str.substring(0, maxLen) + '...';
+        }
+        
+        function formatMoney(value) {
+            if (!value || value === '—' || value === '') return '—';
+            const num = parseInt(value.toString().replace(/[.,]/g, ''));
+            if (isNaN(num)) return value;
+            return num.toLocaleString('vi-VN');
+        }
+        
+        function updateTimestamp() {
+            document.getElementById('lastUpdated').textContent = 'Cập nhật: ' + new Date().toLocaleTimeString('vi-VN');
+        }
+        
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', renderTable);
+        document.getElementById('stageFilter').addEventListener('change', renderTable);
+        document.getElementById('industryFilter').addEventListener('change', renderTable);
+        document.getElementById('startDate').addEventListener('change', renderTable);
+        document.getElementById('endDate').addEventListener('change', renderTable);
+        
+        // Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
             Telegram.WebApp.ready();
             Telegram.WebApp.expand();
         }
         
-        // ============================================
-        // INIT
-        // ============================================
         loadData();
     </script>
 </body>
