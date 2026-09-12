@@ -134,11 +134,23 @@
     <button class="refresh-btn" onclick="loadData()">🔄</button>
     
     <script>
-        const CRM_DATA_URL = 'https://raw.githubusercontent.com/imindvietnam-dotcom/CRM_telegram_hermes/master/crm-imind-clients.md';
-        const SALE_SCHEDULE_URL = 'https://raw.githubusercontent.com/imindvietnam-dotcom/CRM_telegram_hermes/master/crm-sale-schedule.md';
+        const CRM_DATA_URL = 'https://api.github.com/repos/imindvietnam-dotcom/CRM_telegram_hermes/contents/crm-imind-clients.md';
+        const SALE_SCHEDULE_URL = 'https://api.github.com/repos/imindvietnam-dotcom/CRM_telegram_hermes/contents/crm-sale-schedule.md';
         const AUTO_REFRESH_MS = 300000;
         let customers = [];
         let saleSchedule = [];
+        
+        // Fetch raw content from GitHub API (bypasses CDN cache)
+        async function fetchGitHubFile(url) {
+            const response = await fetch(url + '?t=' + Date.now(), {
+                headers: {
+                    'Accept': 'application/vnd.github.raw+json',
+                    'User-Agent': 'iMind-CRM-TMA'
+                }
+            });
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            return await response.text();
+        }
         
         // Parse markdown into sections
         function parseCRM(md) {
@@ -314,9 +326,10 @@
             try {
                 let md = null;
                 try {
-                    const response = await fetch(CRM_DATA_URL + '?t=' + Date.now());
-                    if (response.ok) md = await response.text();
-                } catch (e) { console.warn('Fetch error:', e); }
+                    md = await fetchGitHubFile(CRM_DATA_URL);
+                } catch (e) {
+                    console.warn('Fetch error:', e);
+                }
                 
                 if (!md || md.trim().length < 50) {
                     md = getFallbackData();
@@ -324,12 +337,9 @@
                 
                 // Also try to fetch sale schedule
                 try {
-                    const schedResp = await fetch(SALE_SCHEDULE_URL + '?t=' + Date.now());
-                    if (schedResp.ok) {
-                        const schedMd = await schedResp.text();
-                        const schedSections = parseCRM(schedMd);
-                        saleSchedule = schedSections['Bảng Thanh Toán Chi Tiết'] || [];
-                    }
+                    const schedMd = await fetchGitHubFile(SALE_SCHEDULE_URL);
+                    const schedSections = parseCRM(schedMd);
+                    saleSchedule = schedSections['Bảng Thanh Toán Chi Tiết'] || [];
                 } catch (e) { console.warn('Schedule fetch error:', e); }
                 
                 const sections = parseCRM(md);
