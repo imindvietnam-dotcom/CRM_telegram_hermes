@@ -134,22 +134,25 @@
     <button class="refresh-btn" onclick="loadData()">🔄</button>
     
     <script>
-        const CRM_DATA_URL = 'https://api.github.com/repos/imindvietnam-dotcom/CRM_telegram_hermes/contents/crm-imind-clients.md';
-        const SALE_SCHEDULE_URL = 'https://api.github.com/repos/imindvietnam-dotcom/CRM_telegram_hermes/contents/crm-sale-schedule.md';
+        const CRM_DATA_URL = 'https://api.github.com/repos/imindvietnam-dotcom/CRM_telegram_hermes/contents/CRM/crm-imind-clients.md';
+        const SALE_SCHEDULE_URL = 'https://api.github.com/repos/imindvietnam-dotcom/CRM_telegram_hermes/contents/CRM/crm-sale-schedule.md';
         const AUTO_REFRESH_MS = 300000;
         let customers = [];
         let saleSchedule = [];
         
         // Fetch raw content from GitHub API (bypasses CDN cache)
         async function fetchGitHubFile(url) {
-            const response = await fetch(url + '?t=' + Date.now(), {
+            const ts = Date.now();
+            const response = await fetch(url + '?t=' + ts, {
                 headers: {
-                    'Accept': 'application/vnd.github.raw+json',
+                    'Accept': 'application/vnd.github+json',
                     'User-Agent': 'iMind-CRM-TMA'
                 }
             });
             if (!response.ok) throw new Error('HTTP ' + response.status);
-            return await response.text();
+            const data = await response.json();
+            // Decode base64 content
+            return atob(data.content.replace(/\s/g, ''));
         }
         
         // Parse markdown into sections
