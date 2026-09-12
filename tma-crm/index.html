@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>iMind CRM</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5; color: #333; line-height: 1.4;
+            padding-bottom: 60px;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; padding: 16px; position: sticky; top: 0; z-index: 100;
+        }
+        .header h1 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+        .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-group { flex: 1; min-width: 100px; }
+        .filter-group label { display: block; font-size: 11px; opacity: 0.9; margin-bottom: 4px; }
+        .filter-group select, .filter-group input {
+            width: 100%; padding: 8px 10px; border: none; border-radius: 6px;
+            font-size: 13px; background: rgba(255,255,255,0.95);
+        }
+        .stats { display: flex; gap: 12px; padding: 12px 16px; background: white; border-bottom: 1px solid #e0e0e0; overflow-x: auto; }
+        .stat-item { text-align: center; min-width: 60px; }
+        .stat-value { font-size: 20px; font-weight: 700; color: #667eea; }
+        .stat-label { font-size: 10px; color: #888; text-transform: uppercase; }
+        
+        /* Customer cards */
+        .customer-card {
+            background: white; margin: 8px 12px; border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden;
+        }
+        .customer-header {
+            padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; border-bottom: 1px solid #f0f0f0;
+        }
+        .customer-header:active { background: #f5f5ff; }
+        .customer-name { font-weight: 600; font-size: 14px; }
+        .customer-id { font-family: monospace; font-size: 11px; color: #888; }
+        .customer-meta { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+        .industry-tag {
+            font-size: 10px; padding: 2px 8px; border-radius: 10px;
+            background: #e8eaf6; color: #3949ab;
+        }
+        .expand-icon { font-size: 12px; color: #999; transition: transform 0.2s; }
+        .expand-icon.open { transform: rotate(180deg); }
+        
+        /* Customer detail */
+        .customer-detail { display: none; padding: 0 16px 16px; }
+        .customer-detail.open { display: block; }
+        
+        /* Section tabs */
+        .section-tabs {
+            display: flex; gap: 4px; margin: 12px 0 8px; overflow-x: auto;
+        }
+        .section-tab {
+            padding: 6px 12px; font-size: 11px; border-radius: 16px;
+            background: #f0f0f0; color: #666; white-space: nowrap;
+            cursor: pointer; border: none;
+        }
+        .section-tab.active { background: #667eea; color: white; }
+        
+        /* Section content */
+        .section-content { display: none; }
+        .section-content.active { display: block; }
+        
+        /* Data grid */
+        .data-grid { font-size: 12px; }
+        .data-row {
+            display: flex; padding: 8px 0; border-bottom: 1px solid #f0f0f0;
+        }
+        .data-row:last-child { border-bottom: none; }
+        .data-label { color: #888; min-width: 100px; flex-shrink: 0; }
+        .data-value { color: #333; word-break: break-word; }
+        .data-value.money { font-family: monospace; color: #2e7d32; }
+        .data-value.empty { color: #bbb; }
+        
+        /* Sub-service rows */
+        .sub-service {
+            background: #fafafa; border-radius: 8px; padding: 8px 12px;
+            margin: 6px 0; border-left: 3px solid #667eea;
+        }
+        .sub-service-id { font-family: monospace; font-size: 11px; color: #667eea; font-weight: 600; }
+        .sub-service-name { font-size: 12px; margin-top: 2px; }
+        
+        /* Stage badges */
+        .stage-badge {
+            display: inline-block; padding: 2px 8px; border-radius: 10px;
+            font-size: 10px; font-weight: 500;
+        }
+        .stage-Lead { background: #f5f5f5; color: #666; }
+        .stage-Tư\ vấn\/Demo { background: #e3f2fd; color: #1565c0; }
+        .stage-Báo\ giá { background: #fff3e0; color: #e65100; }
+        .stage-Thanh\ toán\ đợt\ 1 { background: #e8f5e9; color: #2e7d32; }
+        .stage-Thanh\ toán\ đợt\ 2 { background: #e0f2f1; color: #00695c; }
+        .stage-Thanh\ toán\ đợt\ 3 { background: #e0f7fa; color: #00838f; }
+        .stage-Hoàn\ thành { background: #c8e6c9; color: #1b5e20; }
+        
+        /* Progress bar */
+        .progress-bar {
+            height: 6px; background: #e0e0e0; border-radius: 3px; margin-top: 4px;
+        }
+        .progress-fill {
+            height: 100%; background: #667eea; border-radius: 3px;
+        }
+        
+        /* Loading & empty */
+        .loading { text-align: center; padding: 40px; color: #888; }
+        .spinner { width: 30px; height: 30px; border: 3px solid #e0e0e0; border-top-color: #667eea; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .empty-state { text-align: center; padding: 40px; color: #888; }
+        .error-msg { background: #ffebee; color: #c62828; padding: 12px; border-radius: 8px; margin: 12px; font-size: 12px; }
+        
+        /* Refresh button */
+        .refresh-btn { position: fixed; bottom: 20px; right: 20px; width: 48px; height: 48px; border-radius: 50%; background: #667eea; color: white; border: none; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(102,126,234,0.4); z-index: 100; }
+        .last-updated { text-align: center; font-size: 11px; color: #888; padding: 8px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 iMind CRM</h1>
+        <div class="filters">
+            <div class="filter-group"><label>Tìm kiếm</label><input type="text" id="searchInput" placeholder="Tên khách hàng..."></div>
+            <div class="filter-group"><label>Giai đoạn</label><select id="stageFilter"><option value="">Tất cả</option></select></div>
+            <div class="filter-group"><label>Ngành</label><select id="industryFilter"><option value="">Tất cả</option></select></div>
+        </div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div id="customerList"><div class="loading"><div class="spinner"></div><p>Đang tải dữ liệu...</p></div></div>
+    <div class="last-updated" id="lastUpdated"></div>
+    <button class="refresh-btn" onclick="loadData()">🔄</button>
+    
+    <script>
+        const CRM_DATA_URL = 'https://raw.githubusercontent.com/imindvietnam-dotcom/CRM_telegram_hermes/master/crm-imind-clients.md';
+        const SALE_SCHEDULE_URL = 'https://raw.githubusercontent.com/imindvietnam-dotcom/CRM_telegram_hermes/master/crm-sale-schedule.md';
+        const AUTO_REFRESH_MS = 300000;
+        let customers = [];
+        let saleSchedule = [];
+        
+        // Parse markdown into sections
+        function parseCRM(md) {
+            const sections = {};
+            let currentSection = null;
+            let currentTable = [];
+            
+            const lines = md.split('\n');
+            for (const line of lines) {
+                // Section header: ## 1. HỢP ĐỒNG
+                const sectionMatch = line.match(/^##\s+\d+\.\s+(.+)/);
+                if (sectionMatch) {
+                    if (currentSection && currentTable.length > 0) {
+                        sections[currentSection] = parseTable(currentTable);
+                    }
+                    currentSection = sectionMatch[1].trim();
+                    currentTable = [];
+                    continue;
+                }
+                
+                // Table line
+                if (line.trim().startsWith('|') && line.includes('|')) {
+                    if (!line.match(/^\|[\s\-:|]+$/)) {
+                        currentTable.push(line);
+                    }
+                }
+            }
+            if (currentSection && currentTable.length > 0) {
+                sections[currentSection] = parseTable(currentTable);
+            }
+            
+            return sections;
+        }
+        
+        // Parse table lines into array of objects
+        function parseTable(tableLines) {
+            if (tableLines.length < 2) return [];
+            
+            const parseLine = (line) => {
+                line = line.replace(/^\|+\s*/, '').replace(/\s*\|+$/, '');
+                return line.split('|').map(c => c.trim());
+            };
+            
+            const headers = parseLine(tableLines[0]);
+            const rows = [];
+            
+            for (let i = 1; i < tableLines.length; i++) {
+                const cells = parseLine(tableLines[i]);
+                if (cells.length === headers.length) {
+                    const row = {};
+                    headers.forEach((h, idx) => {
+                        row[h] = cells[idx] || '';
+                    });
+                    rows.push(row);
+                }
+            }
+            
+            return rows;
+        }
+        
+        // Build customer objects from sections
+        function buildCustomers(sections) {
+            const hopDong = sections['HỢP ĐỒNG'] || [];
+            const sale = sections['SALE'] || [];
+            const order = sections['ORDER'] || [];
+            const operation = sections['OPERATION'] || [];
+            
+            const customers = [];
+            
+            for (const row of hopDong) {
+                const id = row['ID'] || '';
+                // Skip sub-rows (contain LEAD, CUST, AAA, etc.)
+                if (id.includes('-LEAD') || id.includes('-CUST') || id.includes('-AAA') || 
+                    id.includes('-15SOCIAL') || id.includes('-VIDAI30') || id.includes('-15SEO') ||
+                    id.includes('-Guideline') || id.includes('-MKT-')) {
+                    continue;
+                }
+                
+                const customer = {
+                    id: id,
+                    name: row['Tên doanh nghiệp / khách hàng'] || '',
+                    industry: row['Ngành'] || '',
+                    ngayTiepNhan: row['Ngày tiếp nhận khách*'] || '',
+                    ngayBD: row['Ngày bắt đầu HĐ**'] || '',
+                    ngayKT: row['Ngày kết thúc HĐ**'] || '',
+                    chietKhau: row['Chiết khấu**'] || '',
+                    giaTruocCK: row['Giá trước CK**'] || '',
+                    giaSauCK: row['Giá sau CK (AI)'] || '',
+                    giaVAT: row['Giá VAT 8% (AI)'] || '',
+                    services: []
+                };
+                
+                // Find sub-services for this customer
+                const prefix = id + '-';
+                for (const subRow of hopDong) {
+                    const subId = subRow['ID'] || '';
+                    if (subId.startsWith(prefix)) {
+                        const service = {
+                            id: subId,
+                            name: subRow['Tên doanh nghiệp / khách hàng'] || '',
+                            industry: subRow['Ngành'] || '',
+                            ngayTiepNhan: subRow['Ngày tiếp nhận khách*'] || '',
+                            ngayBD: subRow['Ngày bắt đầu HĐ**'] || '',
+                            ngayKT: subRow['Ngày kết thúc HĐ**'] || '',
+                            chietKhau: subRow['Chiết khấu**'] || '',
+                            giaTruocCK: subRow['Giá trước CK**'] || '',
+                            giaSauCK: subRow['Giá sau CK (AI)'] || '',
+                            giaVAT: subRow['Giá VAT 8% (AI)'] || ''
+                        };
+                        
+                        // Find matching sale
+                        const saleRow = sale.find(s => s['ID'] === subId);
+                        if (saleRow) {
+                            service.saleStage = saleRow['Giai đoạn Sale'] || '';
+                            service.saleAmount = saleRow['Số tiền đợt tiếp theo'] || '';
+                            service.saleDeadline = saleRow['Thời hạn đợt tiếp theo'] || '';
+                            service.saleNote = saleRow['Ghi chú thêm về khách hàng'] || '';
+                        }
+                        
+                        // Find matching order
+                        const orderRow = order.find(o => o['ID'] === subId);
+                        if (orderRow) {
+                            service.order = [
+                                { qty: orderRow['Số lượng 1'], unit: orderRow['Đơn vị 1'] },
+                                { qty: orderRow['Số lượng 2'], unit: orderRow['Đơn vị 2'] },
+                                { qty: orderRow['Số lượng 3'], unit: orderRow['Đơn vị 3'] },
+                                { qty: orderRow['Số lượng 4'], unit: orderRow['Đơn vị 4'] }
+                            ].filter(o => o.qty && o.qty !== '—' && o.unit && o.unit !== '—');
+                        }
+                        
+                        // Find matching operation
+                        const opRow = operation.find(o => o['ID'] === subId);
+                        if (opRow) {
+                            service.opStart = opRow['Ngày bắt đầu'] || '';
+                            service.opEnd = opRow['Ngày kết thúc'] || '';
+                            service.progress = [
+                                { pct: opRow['Tiến độ 1'], unit: opRow['Đơn vị 1'] },
+                                { pct: opRow['Tiến độ 2'], unit: opRow['Đơn vị 2'] },
+                                { pct: opRow['Tiến độ 3'], unit: opRow['Đơn vị 3'] },
+                                { pct: opRow['Tiến độ 4'], unit: opRow['Đơn vị 4'] }
+                            ].filter(p => p.pct && p.pct !== '—' && p.unit && p.unit !== '—');
+                            service.trung = opRow['Trung'] || '';
+                            service.tai = opRow['Tài'] || '';
+                        }
+                        
+                        // Find payment schedule
+                        const schedule = saleSchedule.find(s => s['ID'] === subId);
+                        if (schedule) {
+                            service.payments = [];
+                            for (let i = 1; i <= 12; i++) {
+                                const amount = schedule[`Đợt ${i} (vnđ)`];
+                                const deadline = schedule[`Hạn đợt ${i}`];
+                                if (amount && amount !== '—') {
+                                    services.payments.push({ dot: i, amount, deadline });
+                                }
+                            }
+                        }
+                        
+                        customer.services.push(service);
+                    }
+                }
+                
+                customers.push(customer);
+            }
+            
+            return customers;
+        }
+        
+        async function loadData() {
+            const container = document.getElementById('customerList');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Đang tải dữ liệu...</p></div>';
+            
+            try {
+                let md = null;
+                try {
+                    const response = await fetch(CRM_DATA_URL + '?t=' + Date.now());
+                    if (response.ok) md = await response.text();
+                } catch (e) { console.warn('Fetch error:', e); }
+                
+                if (!md || md.trim().length < 50) {
+                    md = getFallbackData();
+                }
+                
+                // Also try to fetch sale schedule
+                try {
+                    const schedResp = await fetch(SALE_SCHEDULE_URL + '?t=' + Date.now());
+                    if (schedResp.ok) {
+                        const schedMd = await schedResp.text();
+                        const schedSections = parseCRM(schedMd);
+                        saleSchedule = schedSections['Bảng Thanh Toán Chi Tiết'] || [];
+                    }
+                } catch (e) { console.warn('Schedule fetch error:', e); }
+                
+                const sections = parseCRM(md);
+                customers = buildCustomers(sections);
+                
+                if (customers.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><p>Không tìm thấy dữ liệu</p></div>';
+                    return;
+                }
+                
+                populateFilters();
+                renderStats();
+                renderCustomers();
+                updateTimestamp();
+                
+                setTimeout(loadData, AUTO_REFRESH_MS);
+            } catch (error) {
+                container.innerHTML = `<div class="error-msg">Lỗi: ${error.message}</div>`;
+            }
+        }
+        
+        function getFallbackData() {
+            return `## 1. HỢP ĐỒNG
+| ID | Tên doanh nghiệp / khách hàng | Ngành | Ngày tiếp nhận khách* | Ngày bắt đầu HĐ** | Ngày kết thúc HĐ** | Chiết khấu** | Giá trước CK** | Giá sau CK (AI) | Giá VAT 8% (AI) |
+|---|---|---|---|---|---|---|---|---|---|
+| **THL-001** | **Thành Lợi DentalLab** | **Y tế** | 10/09/2026 | — | — | — | — | — | — |
+| THL-001-LEAD1 | Website + SEO + tra cứu BH | Y tế | 10/09/2026 | — | — | — | — | — | — |
+
+## 2. SALE
+| ID | Giai đoạn Sale | Số tiền đợt tiếp theo | Thời hạn đợt tiếp theo | Ghi chú thêm về khách hàng |
+|---|---|---|---|---|
+| THL-001-LEAD1 | Báo giá | 25.000.000 | 15/10/2026 | Website sập — cần brief Dev |
+
+## 3. ORDER
+| ID | Số lượng 1 | Đơn vị 1 | Số lượng 2 | Đơn vị 2 | Số lượng 3 | Đơn vị 3 | Số lượng 4 | Đơn vị 4 |
+|---|---|---|---|---|---|---|---|---|
+| THL-001-LEAD1 | 1 | Website+SEO+tra cứu BH | — | — | — | — | — | — |
+
+## 4. OPERATION
+| ID | Ngày bắt đầu | Ngày kết thúc | Tiến độ 1 | Đơn vị 1 | Tiến độ 2 | Đơn vị 2 | Tiến độ 3 | Đơn vị 3 | Tiến độ 4 | Đơn vị 4 | Trung | Tài |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| THL-001-LEAD1 | — | — | 0 | website | — | — | — | — | — | — | 0% | 0% |`;
+        }
+        
+        function populateFilters() {
+            const stageFilter = document.getElementById('stageFilter');
+            const industryFilter = document.getElementById('industryFilter');
+            
+            const stages = new Set();
+            const industries = new Set();
+            
+            customers.forEach(c => {
+                if (c.industry) industries.add(c.industry);
+                c.services.forEach(s => {
+                    if (s.saleStage) stages.add(s.saleStage);
+                });
+            });
+            
+            stageFilter.innerHTML = '<option value="">Tất cả</option>' + 
+                [...stages].sort().map(s => `<option value="${s}">${s}</option>`).join('');
+            industryFilter.innerHTML = '<option value="">Tất cả</option>' + 
+                [...industries].sort().map(i => `<option value="${i}">${i}</option>`).join('');
+        }
+        
+        function renderStats() {
+            const stats = document.getElementById('stats');
+            const total = customers.length;
+            const totalServices = customers.reduce((sum, c) => sum + c.services.length, 0);
+            
+            const stages = {};
+            customers.forEach(c => {
+                c.services.forEach(s => {
+                    const stage = s.saleStage || 'Unknown';
+                    stages[stage] = (stages[stage] || 0) + 1;
+                });
+            });
+            
+            let html = `<div class="stat-item"><div class="stat-value">${total}</div><div class="stat-label">Khách hàng</div></div>`;
+            html += `<div class="stat-item"><div class="stat-value">${totalServices}</div><div class="stat-label">Dịch vụ</div></div>`;
+            
+            const sortedStages = Object.entries(stages).sort((a, b) => b[1] - a[1]).slice(0, 3);
+            for (const [stage, count] of sortedStages) {
+                html += `<div class="stat-item"><div class="stat-value">${count}</div><div class="stat-label">${stage}</div></div>`;
+            }
+            stats.innerHTML = html;
+        }
+        
+        function renderCustomers() {
+            const container = document.getElementById('customerList');
+            const filtered = getFilteredCustomers();
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>Không tìm thấy khách hàng</p></div>';
+                return;
+            }
+            
+            let html = '';
+            filtered.forEach((customer, idx) => {
+                html += `
+                <div class="customer-card">
+                    <div class="customer-header" onclick="toggleDetail(${idx})">
+                        <div>
+                            <div class="customer-name">${customer.name || customer.id}</div>
+                            <div class="customer-id">${customer.id}</div>
+                            <div class="customer-meta">
+                                ${customer.industry ? `<span class="industry-tag">${customer.industry}</span>` : ''}
+                                <span style="font-size:11px;color:#888">${customer.services.length} dịch vụ</span>
+                            </div>
+                        </div>
+                        <span class="expand-icon" id="icon-${idx}">▼</span>
+                    </div>
+                    <div class="customer-detail" id="detail-${idx}">
+                        ${renderCustomerSections(customer)}
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+        
+        function renderCustomerSections(customer) {
+            let html = `
+                <div class="section-tabs">
+                    <button class="section-tab active" onclick="showSection(this, 'hd-${customer.id}')">Hợp đồng</button>
+                    <button class="section-tab" onclick="showSection(this, 'sale-${customer.id}')">Sale</button>
+                    <button class="section-tab" onclick="showSection(this, 'order-${customer.id}')">Order</button>
+                    <button class="section-tab" onclick="showSection(this, 'op-${customer.id}')">Operation</button>
+                </div>
+                
+                <div class="section-content active" id="hd-${customer.id}">
+                    ${renderHopDong(customer)}
+                </div>
+                <div class="section-content" id="sale-${customer.id}">
+                    ${renderSale(customer)}
+                </div>
+                <div class="section-content" id="order-${customer.id}">
+                    ${renderOrder(customer)}
+                </div>
+                <div class="section-content" id="op-${customer.id}">
+                    ${renderOperation(customer)}
+                </div>
+            `;
+            return html;
+        }
+        
+        function renderHopDong(customer) {
+            let html = '<div class="data-grid">';
+            
+            // Main info
+            html += `<div class="data-row"><span class="data-label">Tổng HĐ</span><span class="data-value">${customer.name}</span></div>`;
+            html += `<div class="data-row"><span class="data-label">Ngày tiếp nhận</span><span class="data-value">${customer.ngayTiepNhan || '—'}</span></div>`;
+            
+            // Sub-services
+            customer.services.forEach(svc => {
+                html += `<div class="sub-service">`;
+                html += `<div class="sub-service-id">${svc.id}</div>`;
+                html += `<div class="sub-service-name">${svc.name}</div>`;
+                html += `<div class="data-grid" style="margin-top:8px">`;
+                html += `<div class="data-row"><span class="data-label">Ngày BĐ</span><span class="data-value">${svc.ngayBD || '—'}</span></div>`;
+                html += `<div class="data-row"><span class="data-label">Ngày KT</span><span class="data-value">${svc.ngayKT || '—'}</span></div>`;
+                html += `<div class="data-row"><span class="data-label">Chiết khấu</span><span class="data-value">${svc.chietKhau || '—'}</span></div>`;
+                html += `<div class="data-row"><span class="data-label">Giá trước CK</span><span class="data-value ${svc.giaTruocCK && svc.giaTruocCK !== '—' ? 'money' : 'empty'}">${svc.giaTruocCK && svc.giaTruocCK !== '—' ? formatMoney(svc.giaTruocCK) + ' đ' : '—'}</span></div>`;
+                html += `<div class="data-row"><span class="data-label">Giá sau CK</span><span class="data-value ${svc.giaSauCK && svc.giaSauCK !== '—' ? 'money' : 'empty'}">${svc.giaSauCK && svc.giaSauCK !== '—' ? formatMoney(svc.giaSauCK) + ' đ' : '—'}</span></div>`;
+                html += `<div class="data-row"><span class="data-label">VAT 8%</span><span class="data-value ${svc.giaVAT && svc.giaVAT !== '—' ? 'money' : 'empty'}">${svc.giaVAT && svc.giaVAT !== '—' ? formatMoney(svc.giaVAT) + ' đ' : '—'}</span></div>`;
+                html += `</div></div>`;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function renderSale(customer) {
+            let html = '<div class="data-grid">';
+            
+            customer.services.forEach(svc => {
+                html += `<div class="sub-service">`;
+                html += `<div class="sub-service-id">${svc.id}</div>`;
+                html += `<div class="sub-service-name">${svc.name}</div>`;
+                html += `<div class="data-grid" style="margin-top:8px">`;
+                
+                const stageClass = svc.saleStage ? 'stage-' + svc.saleStage.replace(/\s+/g, '\\ ') : '';
+                html += `<div class="data-row"><span class="data-label">Giai đoạn</span><span class="data-value">${svc.saleStage ? `<span class="stage-badge ${stageClass}">${svc.saleStage}</span>` : '—'}</span></div>`;
+                html += `<div class="data-row"><span class="data-label">Đợt tiếp theo</span><span class="data-value ${svc.saleAmount && svc.saleAmount !== '—' ? 'money' : 'empty'}">${svc.saleAmount && svc.saleAmount !== '—' ? formatMoney(svc.saleAmount) + ' đ' : '—'}</span></div>`;
+                html += `<div class="data-row"><span class="data-label">Thời hạn</span><span class="data-value">${svc.saleDeadline || '—'}</span></div>`;
+                html += `<div class="data-row"><span class="data-label">Ghi chú</span><span class="data-value">${svc.saleNote || '—'}</span></div>`;
+                
+                // Payment schedule
+                if (svc.payments && svc.payments.length > 0) {
+                    html += `<div class="data-row"><span class="data-label">Lịch thanh toán</span><span class="data-value">`;
+                    svc.payments.forEach(p => {
+                        html += `<div>Đợt ${p.dot}: ${formatMoney(p.amount)} đ — ${p.deadline}</div>`;
+                    });
+                    html += `</span></div>`;
+                }
+                
+                html += `</div></div>`;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function renderOrder(customer) {
+            let html = '<div class="data-grid">';
+            
+            customer.services.forEach(svc => {
+                html += `<div class="sub-service">`;
+                html += `<div class="sub-service-id">${svc.id}</div>`;
+                html += `<div class="sub-service-name">${svc.name}</div>`;
+                html += `<div class="data-grid" style="margin-top:8px">`;
+                
+                if (svc.order && svc.order.length > 0) {
+                    svc.order.forEach((o, i) => {
+                        html += `<div class="data-row"><span class="data-label">Số lượng ${i+1}</span><span class="data-value">${o.qty} ${o.unit}</span></div>`;
+                    });
+                } else {
+                    html += `<div class="data-row"><span class="data-label">Order</span><span class="data-value empty">—</span></div>`;
+                }
+                
+                html += `</div></div>`;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function renderOperation(customer) {
+            let html = '<div class="data-grid">';
+            
+            customer.services.forEach(svc => {
+                html += `<div class="sub-service">`;
+                html += `<div class="sub-service-id">${svc.id}</div>`;
+                html += `<div class="sub-service-name">${svc.name}</div>`;
+                html += `<div class="data-grid" style="margin-top:8px">`;
+                
+                html += `<div class="data-row"><span class="data-label">Ngày BĐ</span><span class="data-value">${svc.opStart || '—'}</span></div>`;
+                html += `<div class="data-row"><span class="data-label">Ngày KT</span><span class="data-value">${svc.opEnd || '—'}</span></div>`;
+                
+                if (svc.progress && svc.progress.length > 0) {
+                    svc.progress.forEach((p, i) => {
+                        const pctNum = parseInt(p.pct) || 0;
+                        html += `<div class="data-row"><span class="data-label">Tiến độ ${i+1}</span><span class="data-value">${p.pct} ${p.unit}</span></div>`;
+                        html += `<div class="progress-bar"><div class="progress-fill" style="width:${pctNum}%"></div></div>`;
+                    });
+                }
+                
+                if (svc.trung || svc.tai) {
+                    html += `<div class="data-row"><span class="data-label">Trung / Tài</span><span class="data-value">${svc.trung || '—'} / ${svc.tai || '—'}</span></div>`;
+                }
+                
+                html += `</div></div>`;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function getFilteredCustomers() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const stage = document.getElementById('stageFilter').value;
+            const industry = document.getElementById('industryFilter').value;
+            
+            return customers.filter(c => {
+                const matchSearch = !search || 
+                    (c.name && c.name.toLowerCase().includes(search)) || 
+                    (c.id && c.id.toLowerCase().includes(search));
+                const matchIndustry = !industry || c.industry === industry;
+                const matchStage = !stage || c.services.some(s => s.saleStage === stage);
+                
+                return matchSearch && matchStage && matchIndustry;
+            });
+        }
+        
+        function toggleDetail(idx) {
+            const detail = document.getElementById(`detail-${idx}`);
+            const icon = document.getElementById(`icon-${idx}`);
+            detail.classList.toggle('open');
+            icon.classList.toggle('open');
+        }
+        
+        function showSection(btn, sectionId) {
+            // Remove active from all tabs in same card
+            const tabs = btn.parentElement.querySelectorAll('.section-tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Hide all sections, show target
+            const card = btn.closest('.customer-detail');
+            const sections = card.querySelectorAll('.section-content');
+            sections.forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+        }
+        
+        function formatMoney(value) {
+            if (!value || value === '—' || value === '') return '—';
+            const num = parseInt(value.toString().replace(/[.,]/g, ''));
+            if (isNaN(num)) return value;
+            return num.toLocaleString('vi-VN');
+        }
+        
+        function updateTimestamp() {
+            document.getElementById('lastUpdated').textContent = 'Cập nhật: ' + new Date().toLocaleTimeString('vi-VN');
+        }
+        
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', renderCustomers);
+        document.getElementById('stageFilter').addEventListener('change', renderCustomers);
+        document.getElementById('industryFilter').addEventListener('change', renderCustomers);
+        
+        // Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+        }
+        
+        loadData();
+    </script>
+</body>
+</html>
