@@ -6,152 +6,45 @@
     <title>iMind CRM</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5; color: #333; line-height: 1.4;
-            padding-bottom: 60px;
-        }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; padding: 16px; position: sticky; top: 0; z-index: 100;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; line-height: 1.4; padding-bottom: 60px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px; position: sticky; top: 0; z-index: 100; }
         .header h1 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
         .filters { display: flex; gap: 8px; flex-wrap: wrap; }
         .filter-group { flex: 1; min-width: 100px; }
         .filter-group label { display: block; font-size: 11px; opacity: 0.9; margin-bottom: 4px; }
-        .filter-group select, .filter-group input {
-            width: 100%; padding: 8px 10px; border: none; border-radius: 6px;
-            font-size: 13px; background: rgba(255,255,255,0.95);
-        }
+        .filter-group select, .filter-group input { width: 100%; padding: 8px 10px; border: none; border-radius: 6px; font-size: 13px; background: rgba(255,255,255,0.95); }
         .stats { display: flex; gap: 12px; padding: 12px 16px; background: white; border-bottom: 1px solid #e0e0e0; overflow-x: auto; }
         .stat-item { text-align: center; min-width: 60px; }
         .stat-value { font-size: 20px; font-weight: 700; color: #667eea; }
         .stat-label { font-size: 10px; color: #888; text-transform: uppercase; }
-        
-        /* Section tabs */
-        .section-tabs {
-            display: flex; gap: 4px; padding: 8px 12px; background: white;
-            border-bottom: 1px solid #e0e0e0; overflow-x: auto;
-        }
-        .section-tab {
-            padding: 8px 16px; font-size: 12px; border-radius: 16px;
-            background: #f0f0f0; color: #666; white-space: nowrap;
-            cursor: pointer; border: none;
-        }
-        .section-tab.active { background: #667eea; color: white; }
-        
-        /* Table container */
-        .table-container {
-            overflow-x: auto;
-            overflow-y: auto;
-            max-height: calc(100vh - 280px);
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        /* Table styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            table-layout: auto;
-        }
-        
-        /* Sticky header */
-        thead {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-        thead th {
-            background: #667eea;
-            color: white;
-            padding: 10px 8px;
-            text-align: left;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            border-right: 1px solid rgba(255,255,255,0.2);
-        }
+        .table-container { overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 280px); -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 2800px; }
+        thead { position: sticky; top: 0; z-index: 50; }
+        thead th { background: #667eea; color: white; padding: 10px 8px; text-align: left; font-weight: 600; white-space: nowrap; border-right: 1px solid rgba(255,255,255,0.2); }
         thead th:last-child { border-right: none; }
-        
-        /* Body rows */
-        tbody tr {
-            background: white;
-            border-bottom: 1px solid #e0e0e0;
-            transition: background 0.15s;
-        }
+        tbody tr { background: white; border-bottom: 1px solid #e0e0e0; transition: background 0.15s; }
         tbody tr:hover { background: #f5f5ff; }
         tbody tr:nth-child(even) { background: #fafafa; }
         tbody tr:nth-child(even):hover { background: #f0f0ff; }
-        
-        /* Main row (customer) */
-        tr.row-main {
-            background: #e8eaf6 !important;
-            font-weight: 600;
-            border-top: 2px solid #667eea;
-        }
-        tr.row-main td {
-            color: #1a1a2e;
-            font-weight: 700;
-        }
-        
-        /* Sub row (service) */
-        tr.row-sub {
-            background: #ffffff !important;
-        }
-        tr.row-sub:nth-child(even) {
-            background: #f8f9ff !important;
-        }
-        tr.row-sub td:first-child {
-            padding-left: 24px;
-            font-family: monospace;
-            color: #555;
-        }
-        
-        tbody td {
-            padding: 10px 8px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            border-right: 1px solid #e0e0e0;
-            max-width: 200px;
-        }
-        tbody td:last-child { border-right: none; }
-        
-        /* Stage badges */
-        .stage-badge {
-            display: inline-block; padding: 2px 8px; border-radius: 10px;
-            font-size: 10px; font-weight: 500;
-        }
+        tr.row-main { background: #e8eaf6 !important; font-weight: 600; border-top: 3px solid #667eea; }
+        tr.row-main td { color: #1a1a2e; font-weight: 700; padding: 10px 8px; white-space: nowrap; border-right: 1px solid #c5cae9; }
+        tr.row-main td:last-child { border-right: none; }
+        tr.row-sub { background: #ffffff !important; }
+        tr.row-sub:nth-child(even) { background: #f8f9ff !important; }
+        tr.row-sub td { padding: 10px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-right: 1px solid #e0e0e0; max-width: 200px; }
+        tr.row-sub td:last-child { border-right: none; }
+        .stage-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 500; }
         .stage-Lead { background: #f5f5f5; color: #666; }
-        .stage-Tư\ vấn\/Demo { background: #e3f2fd; color: #1565c0; }
-        .stage-Báo\ giá { background: #fff3e0; color: #e65100; }
-        .stage-Thanh\ toán\ đợt\ 1 { background: #e8f5e9; color: #2e7d32; }
-        .stage-Thanh\ toán\ đợt\ 2 { background: #e0f2f1; color: #00695c; }
-        .stage-Thanh\ toán\ đợt\ 3 { background: #e0f7fa; color: #00838f; }
-        .stage-Hoàn\ thành { background: #c8e6c9; color: #1b5e20; }
-        
-        /* Money formatting */
+        .stage-Bao-gia { background: #fff3e0; color: #e65100; }
         .money { font-family: monospace; text-align: right; color: #2e7d32; }
-        
-        /* Progress bar */
-        .progress-bar {
-            height: 6px; background: #e0e0e0; border-radius: 3px; margin-top: 4px;
-            min-width: 60px;
-        }
-        .progress-fill {
-            height: 100%; background: #667eea; border-radius: 3px;
-        }
-        
-        /* Loading & empty */
+        .status-paid { color: #2e7d32; font-weight: 600; }
+        .status-unpaid { color: #c62222; font-weight: 500; }
+        .progress-bar { height: 6px; background: #e0e0e0; border-radius: 3px; margin-top: 4px; min-width: 60px; }
+        .progress-fill { height: 100%; background: #667eea; border-radius: 3px; }
         .loading { text-align: center; padding: 40px; color: #888; }
         .spinner { width: 30px; height: 30px; border: 3px solid #e0e0e0; border-top-color: #667eea; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .empty-state { text-align: center; padding: 40px; color: #888; }
-        .error-msg { background: #ffebee; color: #c62828; padding: 12px; border-radius: 8px; margin: 12px; font-size: 12px; }
-        
-        /* Refresh button */
         .refresh-btn { position: fixed; bottom: 20px; right: 20px; width: 48px; height: 48px; border-radius: 50%; background: #667eea; color: white; border: none; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(102,126,234,0.4); z-index: 100; }
         .last-updated { text-align: center; font-size: 11px; color: #888; padding: 8px; }
     </style>
@@ -161,596 +54,799 @@
         <h1>📊 iMind CRM</h1>
         <div class="filters">
             <div class="filter-group"><label>Tìm kiếm</label><input type="text" id="searchInput" placeholder="Tên khách hàng..."></div>
-            <div class="filter-group"><label>Giai đoạn</label><select id="stageFilter"><option value="">Tất cả</option></select></div>
-            <div class="filter-group"><label>Ngành</label><select id="industryFilter"><option value="">Tất cả</option></select></div>
+            <div class="filter-group"><label>Từ ngày</label><input type="date" id="fromDate"></div>
+            <div class="filter-group"><label>Đến ngày</label><input type="date" id="toDate"></div>
+            <div class="filter-group" style="flex: 2;">
+                <label>Nhanh</label>
+                <select id="quickRange" onchange="applyQuickRange()">
+                    <option value="">Chọn nhanh...</option>
+                    <option value="7">7 ngày qua</option>
+                    <option value="14">14 ngày qua</option>
+                    <option value="30">30 ngày qua</option>
+                    <option value="90">90 ngày qua</option>
+                    <option value="thisWeek">Tuần này</option>
+                    <option value="thisMonth">Tháng này</option>
+                    <option value="lastMonth">Tháng trước</option>
+                </select>
+            </div>
         </div>
     </div>
     <div class="stats" id="stats"></div>
-    <div class="section-tabs">
-        <button class="section-tab active" onclick="showSection('hopdong')">Hợp đồng</button>
-        <button class="section-tab" onclick="showSection('sale')">Sale</button>
-        <button class="section-tab" onclick="showSection('order')">Order</button>
-        <button class="section-tab" onclick="showSection('operation')">Operation</button>
-    </div>
     <div class="table-container" id="tableContainer">
         <div class="loading"><div class="spinner"></div><p>Đang tải dữ liệu...</p></div>
     </div>
     <div class="last-updated" id="lastUpdated"></div>
     <button class="refresh-btn" onclick="location.reload()">🔄</button>
-    
+
     <script>
-        // ============================================
-        // EMBEDDED CRM DATA - Edit here to update TMA
-        // ============================================
-        const CRM_MD = `# CRM — iMind AI Marketing
+        const CRM_DATA = [
+  {
+    "main": true,
+    "id": "TYH-001",
+    "uutien": "—",
+    "name": "TY Health Supplements",
+    "industry": "Y tế",
+    "ngayTN": "09/09/2026",
+    "ngayBD": "—",
+    "ngayKT": "—",
+    "chietKhau": "—",
+    "giaTruocCK": "—",
+    "giaSauCK": "—",
+    "vat": "—",
+    "stage": "Lead",
+    "dot1": "—",
+    "dot1Date": "—",
+    "dot1Status": "chưa TT",
+    "dot2": "—",
+    "dot2Date": "—",
+    "dot2Status": "chưa TT",
+    "dot3": "—",
+    "dot3Date": "—",
+    "dot3Status": "chưa TT",
+    "sl1": "—",
+    "unit1": "—",
+    "sl2": "—",
+    "unit2": "—",
+    "sl3": "—",
+    "unit3": "—",
+    "sl4": "—",
+    "unit4": "—",
+    "tongSL": "—",
+    "opBD": "—",
+    "opKT": "—",
+    "tienDo": "0%",
+    "trung": "0%",
+    "tai": "0%",
+    "note": "—"
+  },
+  {
+    "main": false,
+    "id": "TYH-001-LEAD1",
+    "uutien": "🔥🔥",
+    "name": "Content social (2 gói × 2.5tr)",
+    "industry": "Y tế",
+    "ngayTN": "09/09/2026",
+    "ngayBD": "—",
+    "ngayKT": "—",
+    "chietKhau": "—",
+    "giaTruocCK": "5.000.000",
+    "giaSauCK": "—",
+    "vat": "—",
+    "stage": "Lead",
+    "dot1": "—",
+    "dot1Date": "—",
+    "dot1Status": "chưa TT",
+    "dot2": "—",
+    "dot2Date": "—",
+    "dot2Status": "chưa TT",
+    "dot3": "—",
+    "dot3Date": "—",
+    "dot3Status": "chưa TT",
+    "sl1": "2",
+    "unit1": "gói content/tháng",
+    "sl2": "—",
+    "unit2": "—",
+    "sl3": "—",
+    "unit3": "—",
+    "sl4": "—",
+    "unit4": "—",
+    "tongSL": "2",
+    "opBD": "—",
+    "opKT": "—",
+    "tienDo": "0%",
+    "trung": "0%",
+    "tai": "0%",
+    "note": "—"
+  },
+  {
+    "main": false,
+    "id": "TYH-001-LEAD2",
+    "uutien": "🔥",
+    "name": "Video AI (300 video × 130k)",
+    "industry": "Y tế",
+    "ngayTN": "09/09/2026",
+    "ngayBD": "—",
+    "ngayKT": "—",
+    "chietKhau": "—",
+    "giaTruocCK": "39.000.000",
+    "giaSauCK": "—",
+    "vat": "—",
+    "stage": "Lead",
+    "dot1": "—",
+    "dot1Date": "—",
+    "dot1Status": "chưa TT",
+    "dot2": "—",
+    "dot2Date": "—",
+    "dot2Status": "chưa TT",
+    "dot3": "—",
+    "dot3Date": "—",
+    "dot3Status": "chưa TT",
+    "sl1": "300",
+    "unit1": "video AI (30-50s)",
+    "sl2": "—",
+    "unit2": "—",
+    "sl3": "—",
+    "unit3": "—",
+    "sl4": "—",
+    "unit4": "—",
+    "tongSL": "300",
+    "opBD": "—",
+    "opKT": "—",
+    "tienDo": "0%",
+    "trung": "0%",
+    "tai": "0%",
+    "note": "—"
+  },
+  {
+    "main": true,
+    "id": "KKS-001",
+    "uutien": "—",
+    "name": "Kim Khuê Beauty & Spa",
+    "industry": "Sắc đẹp / Thẩm mỹ",
+    "ngayTN": "09/09/2026",
+    "ngayBD": "—",
+    "ngayKT": "—",
+    "chietKhau": "—",
+    "giaTruocCK": "—",
+    "giaSauCK": "—",
+    "vat": "—",
+    "stage": "Lead",
+    "dot1": "—",
+    "dot1Date": "—",
+    "dot1Status": "chưa TT",
+    "dot2": "—",
+    "dot2Date": "—",
+    "dot2Status": "chưa TT",
+    "dot3": "—",
+    "dot3Date": "—",
+    "dot3Status": "chưa TT",
+    "sl1": "—",
+    "unit1": "—",
+    "sl2": "—",
+    "unit2": "—",
+    "sl3": "—",
+    "unit3": "—",
+    "sl4": "—",
+    "unit4": "—",
+    "tongSL": "—",
+    "opBD": "—",
+    "opKT": "—",
+    "tienDo": "0%",
+    "trung": "0%",
+    "tai": "0%",
+    "note": "—"
+  },
+  {
+    "main": false,
+    "id": "KKS-001-LEAD1",
+    "uutien": "🔥",
+    "name": "30 video AI/tháng",
+    "industry": "Sắc đẹp / Thẩm mỹ",
+    "ngayTN": "09/09/2026",
+    "ngayBD": "—",
+    "ngayKT": "—",
+    "chietKhau": "—",
+    "giaTruocCK": "5.000.000",
+    "giaSauCK": "—",
+    "vat": "—",
+    "stage": "Lead",
+    "dot1": "—",
+    "dot1Date": "—",
+    "dot1Status": "chưa TT",
+    "dot2": "—",
+    "dot2Date": "—",
+    "dot2Status": "chưa TT",
+    "dot3": "—",
+    "dot3Date": "—",
+    "dot3Status": "chưa TT",
+    "sl1": "30",
+    "unit1": "video AI/tháng",
+    "sl2": "—",
+    "unit2": "—",
+    "sl3": "—",
+    "unit3": "—",
+    "sl4": "—",
+    "unit4": "—",
+    "tongSL": "30",
+    "opBD": "—",
+    "opKT": "—",
+    "tienDo": "0%",
+    "trung": "0%",
+    "tai": "0%",
+    "note": "—"
+  },
+  {
+    "main": true,
+    "id": "THL-001",
+    "uutien": "—",
+    "name": "Thành Lợi DentalLab",
+    "industry": "Y tế",
+    "ngayTN": "10/09/2026",
+    "ngayBD": "—",
+    "ngayKT": "—",
+    "chietKhau": "—",
+    "giaTruocCK": "—",
+    "giaSauCK": "—",
+    "vat": "—",
+    "stage": "Lead",
+    "dot1": "25.000.000",
+    "dot1Date": "15/10/2026",
+    "dot1Status": "chưa TT",
+    "dot2": "—",
+    "dot2Date": "—",
+    "dot2Status": "chưa TT",
+    "dot3": "—",
+    "dot3Date": "—",
+    "dot3Status": "chưa TT",
+    "sl1": "—",
+    "unit1": "—",
+    "sl2": "—",
+    "unit2": "—",
+    "sl3": "—",
+    "unit3": "—",
+    "sl4": "—",
+    "unit4": "—",
+    "tongSL": "—",
+    "opBD": "—",
+    "opKT": "—",
+    "tienDo": "0%",
+    "trung": "0%",
+    "tai": "0%",
+    "note": "Tổng HĐ 25tr — gồm 3 dịch vụ dưới"
+  },
+  {
+    "main": false,
+    "id": "THL-001-LEAD1",
+    "uutien": "🔥🔥",
+    "name": "Xây website",
+    "industry": "Y tế",
+    "ngayTN": "10/09/2026",
+    "ngayBD": "—",
+    "ngayKT": "—",
+    "chietKhau": "—",
+    "giaTruocCK": "—",
+    "giaSauCK": "—",
+    "vat": "—",
+    "stage": "Báo giá",
+    "dot1": "25.000.000",
+    "dot1Date": "15/10/2026",
+    "dot1Status": "chưa TT",
+    "dot2": "—",
+    "dot2Date": "—",
+    "dot2Status": "chưa TT",
+    "dot3": "—",
+    "dot3Date": "—",
+    "dot3Status": "chưa TT",
+    "sl1": "1",
+    "unit1": "website",
+    "sl2": "—",
+    "unit2": "—",
+    "sl3": "—",
+    "unit3": "—",
+    "sl4": "—",
+    "unit4": "—",
+    "tongSL": "1",
+    "opBD": "—",
+    "opKT": "—",
+    "tienDo": "0%",
+    "trung": "0%",
+    "tai": "0%",
+    "note": "Website sập, cần brief Dev"
+  },
+  {
+    "main": false,
+    "id": "THL-001-LEAD2",
+    "uutien": "🔥🔥",
+    "name": "SEO (15 bài)",
+    "industry": "Y tế",
+    "ngayTN": "10/09/2026",
+    "ngayBD": "—",
+    "ngayKT": "—",
+    "chietKhau": "—",
+    "giaTruocCK": "—",
+    "giaSauCK": "—",
+    "vat": "—",
+    "stage": "Báo giá",
+    "dot1": "25.000.000",
+    "dot1Date": "15/10/2026",
+    "dot1Status": "chưa TT",
+    "dot2": "—",
+    "dot2Date": "—",
+    "dot2Status": "chưa TT",
+    "dot3": "—",
+    "dot3Date": "—",
+    "dot3Status": "chưa TT",
+    "sl1": "15",
+    "unit1": "bài SEO",
+    "sl2": "—",
+    "unit2": "—",
+    "sl3": "—",
+    "unit3": "—",
+    "sl4": "—",
+    "unit4": "—",
+    "tongSL": "15",
+    "opBD": "—",
+    "opKT": "—",
+    "tienDo": "0%",
+    "trung": "0%",
+    "tai": "0%",
+    "note": "15 bài SEO riêng"
+  },
+  {
+    "main": false,
+    "id": "THL-001-LEAD3",
+    "uutien": "🔥",
+    "name": "Tra cứu bảo hành",
+    "industry": "Y tế",
+    "ngayTN": "10/09/2026",
+    "ngayBD": "—",
+    "ngayKT": "—",
+    "chietKhau": "—",
+    "giaTruocCK": "—",
+    "giaSauCK": "—",
+    "vat": "—",
+    "stage": "Báo giá",
+    "dot1": "25.000.000",
+    "dot1Date": "15/10/2026",
+    "dot1Status": "chưa TT",
+    "dot2": "—",
+    "dot2Date": "—",
+    "dot2Status": "chưa TT",
+    "dot3": "—",
+    "dot3Date": "—",
+    "dot3Status": "chưa TT",
+    "sl1": "1",
+    "unit1": "tra cứu BH",
+    "sl2": "—",
+    "unit2": "—",
+    "sl3": "—",
+    "unit3": "—",
+    "sl4": "—",
+    "unit4": "—",
+    "tongSL": "1",
+    "opBD": "—",
+    "opKT": "—",
+    "tienDo": "0%",
+    "trung": "0%",
+    "tai": "0%",
+    "note": "—"
+  },
+  {
+    "main": false,
+    "id": "THL-001-LEAD4",
+    "uutien": "🔥",
+    "name": "AI Agent hành chính",
+    "industry": "Y tế",
+    "ngayTN": "10/09/2026",
+    "ngayBD": "—",
+    "ngayKT": "—",
+    "chietKhau": "—",
+    "giaTruocCK": "—",
+    "giaSauCK": "—",
+    "vat": "—",
+    "stage": "Lead",
+    "dot1": "25.000.000",
+    "dot1Date": "15/10/2026",
+    "dot1Status": "chưa TT",
+    "dot2": "—",
+    "dot2Date": "—",
+    "dot2Status": "chưa TT",
+    "dot3": "—",
+    "dot3Date": "—",
+    "dot3Status": "chưa TT",
+    "sl1": "1",
+    "unit1": "AI Agent",
+    "sl2": "—",
+    "unit2": "—",
+    "sl3": "—",
+    "unit3": "—",
+    "sl4": "—",
+    "unit4": "—",
+    "tongSL": "1",
+    "opBD": "—",
+    "opKT": "—",
+    "tienDo": "0%",
+    "trung": "0%",
+    "tai": "0%",
+    "note": "Chờ xong website"
+  },
+  {
+    "main": true,
+    "id": "NHA-001",
+    "uutien": "—",
+    "name": "Công ty TNHH công nghệ Nhà Sạch",
+    "industry": "Thiết bị gia dụng",
+    "ngayTN": "11/09/2026",
+    "ngayBD": "—",
+    "ngayKT": "—",
+    "chietKhau": "—",
+    "giaTruocCK": "—",
+    "giaSauCK": "—",
+    "vat": "—",
+    "stage": "Lead",
+    "dot1": "—",
+    "dot1Date": "—",
+    "dot1Status": "chưa TT",
+    "dot2": "—",
+    "dot2Date": "—",
+    "dot2Status": "chưa TT",
+    "dot3": "—",
+    "dot3Date": "—",
+    "dot3Status": "chưa TT",
+    "sl1": "—",
+    "unit1": "—",
+    "sl2": "—",
+    "unit2": "—",
+    "sl3": "—",
+    "unit3": "—",
+    "sl4": "—",
+    "unit4": "—",
+    "tongSL": "—",
+    "opBD": "—",
+    "opKT": "—",
+    "tienDo": "0%",
+    "trung": "0%",
+    "tai": "0%",
+    "note": "—"
+  },
+  {
+    "main": false,
+    "id": "NHA-001-CUST",
+    "uutien": "—",
+    "name": "cần update",
+    "industry": "Thiết bị gia dụng",
+    "ngayTN": "11/09/2026",
+    "ngayBD": "—",
+    "ngayKT": "—",
+    "chietKhau": "—",
+    "giaTruocCK": "—",
+    "giaSauCK": "—",
+    "vat": "—",
+    "stage": "Lead",
+    "dot1": "—",
+    "dot1Date": "—",
+    "dot1Status": "chưa TT",
+    "dot2": "—",
+    "dot2Date": "—",
+    "dot2Status": "chưa TT",
+    "dot3": "—",
+    "dot3Date": "—",
+    "dot3Status": "chưa TT",
+    "sl1": "—",
+    "unit1": "cần update",
+    "sl2": "—",
+    "unit2": "—",
+    "sl3": "—",
+    "unit3": "—",
+    "sl4": "—",
+    "unit4": "—",
+    "tongSL": "—",
+    "opBD": "—",
+    "opKT": "—",
+    "tienDo": "—",
+    "trung": "—",
+    "tai": "—",
+    "note": "cần update"
+  },
+  {
+    "main": true,
+    "id": "AWT-001",
+    "uutien": "—",
+    "name": "Adt Wine & Art",
+    "industry": "Rượu vang",
+    "ngayTN": "11/09/2026",
+    "ngayBD": "—",
+    "ngayKT": "—",
+    "chietKhau": "—",
+    "giaTruocCK": "—",
+    "giaSauCK": "—",
+    "vat": "—",
+    "stage": "Lead",
+    "dot1": "—",
+    "dot1Date": "—",
+    "dot1Status": "chưa TT",
+    "dot2": "—",
+    "dot2Date": "—",
+    "dot2Status": "chưa TT",
+    "dot3": "—",
+    "dot3Date": "—",
+    "dot3Status": "chưa TT",
+    "sl1": "—",
+    "unit1": "—",
+    "sl2": "—",
+    "unit2": "—",
+    "sl3": "—",
+    "unit3": "—",
+    "sl4": "—",
+    "unit4": "—",
+    "tongSL": "—",
+    "opBD": "—",
+    "opKT": "—",
+    "tienDo": "0%",
+    "trung": "0%",
+    "tai": "0%",
+    "note": "—"
+  },
+  {
+    "main": false,
+    "id": "AWT-001-CUST",
+    "uutien": "—",
+    "name": "Video AI hộp quà",
+    "industry": "Rượu vang",
+    "ngayTN": "11/09/2026",
+    "ngayBD": "—",
+    "ngayKT": "—",
+    "chietKhau": "—",
+    "giaTruocCK": "—",
+    "giaSauCK": "—",
+    "vat": "—",
+    "stage": "Lead",
+    "dot1": "—",
+    "dot1Date": "—",
+    "dot1Status": "chưa TT",
+    "dot2": "—",
+    "dot2Date": "—",
+    "dot2Status": "chưa TT",
+    "dot3": "—",
+    "dot3Date": "—",
+    "dot3Status": "chưa TT",
+    "sl1": "—",
+    "unit1": "cần update",
+    "sl2": "—",
+    "unit2": "—",
+    "sl3": "—",
+    "unit3": "—",
+    "sl4": "—",
+    "unit4": "—",
+    "tongSL": "—",
+    "opBD": "—",
+    "opKT": "—",
+    "tienDo": "—",
+    "trung": "—",
+    "tai": "—",
+    "note": "Video AI avatar"
+  }
+];
 
-> Cập nhật: 2026-09-12
-> Người tạo: Mai (iMind Update)
-> Rules: CRM/crm-rules.md
-> Payment Schedule: CRM/crm-sale-schedule.md
-
----
-
-## 1. HỢP ĐỒNG
-
-> * = Required Round 1 (sau khi tiếp nhận khách) | ** = Required Round 2 (sau khi chốt báo giá & lên HĐ)
-> Main row = Tổng khách hàng | Subrow = Chi tiết dịch vụ
-
-| ID | Tên doanh nghiệp / khách hàng | Ngành | Ngày tiếp nhận khách* | Ngày bắt đầu HĐ** | Ngày kết thúc HĐ** | Chiết khấu** | Giá trước CK** | Giá sau CK (AI) | Giá VAT 8% (AI) |
-|---|---|---|---|---|---|---|---|---|---|
-| **THL-001** | **Thành Lợi DentalLab** | **Y tế** | 10/09/2026 | — | — | — | — | — | — |
-| THL-001-LEAD1 | Website + SEO + tra cứu BH | Y tế | 10/09/2026 | — | — | — | — | — | — |
-| THL-001-LEAD2 | AI Agent hành chính | Y tế | 10/09/2026 | — | — | — | — | — | — |
-| **TYH-001** | **TY Health Supplements** | **Y tế** | 09/09/2026 | — | — | — | 44.000.000 | — | — |
-| TYH-001-LEAD1 | Content social (2 gói × 2.5tr) | Y tế | 09/09/2026 | — | — | — | 5.000.000 | — | — |
-| TYH-001-LEAD2 | Video AI (300 video × 130k) | Y tế | 09/09/2026 | — | — | — | 39.000.000 | — | — |
-| **KKS-001** | **Kim Khuê Beauty & Spa** | **Sắc đẹp / Thẩm mỹ** | 09/09/2026 | — | — | — | 5.000.000 | — | — |
-| KKS-001-LEAD1 | 30 video AI/tháng | Sắc đẹp / Thẩm mỹ | 09/09/2026 | — | — | — | 5.000.000 | — | — |
-| **NHA-001** | **Công ty TNHH công nghệ Nhà Sạch** | **Thiết bị gia dụng** | 11/09/2026 | — | — | — | — | — | — |
-| NHA-001-CUST | cần update | Thiết bị gia dụng | 11/09/2026 | — | — | — | — | — | — |
-| **AWT-001** | **Adt Wine & Art** | **Rượu vang** | 11/09/2026 | — | — | — | — | — | — |
-| AWT-001-CUST | Video AI hộp quà | Rượu vang | 11/09/2026 | — | — | — | — | — | — |
-
----
-
-## 2. SALE
-
-> Bảng thanh toán chi tiết 12 đợt: CRM/crm-sale-schedule.md
-> CRM chính chỉ hiển thị **đợt tiếp theo chưa thanh toán** — tự advance khi đợt hiện tại đã thanh toán.
-> Default Giai đoạn = Lead. Tự advance: Thanh toán đợt 1 → "Thanh toán đợt 2", v.v.
-
-| ID | Giai đoạn Sale | Số tiền đợt tiếp theo | Thời hạn đợt tiếp theo | Ghi chú thêm về khách hàng |
-|---|---|---|---|---|
-| THL-001-LEAD1 | Báo giá | 25.000.000 | 15/10/2026 | Website sập — cần brief Dev. Next: Thu thập thông tin chi tiết |
-| THL-001-LEAD2 | Lead | — | — | Chờ triển khai xong Website mới tư vấn AI Agent |
-| TYH-001-LEAD1 | Lead | — | — | Kênh nội dung lộn xộn, fanpage bị flag. Next: Thu thập thông tin chi tiết |
-| KKS-001-LEAD1 | Lead | — | — | Bà chủ tự dựng, không đủ số lượng video TikTok. Next: Thu thập thông tin chi tiết |
-| NHA-001-LEAD1 | Lead | — | — | cần update |
-| AWT-001-LEAD1 | Lead | — | — | Cần video AI tạo sinh theo avatar người gửi |
-
----
-
-## 3. ORDER
-
-| ID | Số lượng 1 | Đơn vị 1 | Số lượng 2 | Đơn vị 2 | Số lượng 3 | Đơn vị 3 | Số lượng 4 | Đơn vị 4 |
-|---|---|---|---|---|---|---|---|---|
-| THL-001-LEAD1 | 1 | Website+SEO+tra cứu BH | — | — | — | — | — | — |
-| THL-001-LEAD2 | 1 | AI Agent hành chính | — | — | — | — | — | — |
-| TYH-001-LEAD1 | 2 | gói content/tháng | — | — | — | — | — | — |
-| TYH-001-LEAD2 | 300 | video AI (30-50s) | — | — | — | — | — | — |
-| KKS-001-LEAD1 | 30 | video AI/tháng | — | — | — | — | — | — |
-| NHA-001-CUST | — | cần update | — | — | — | — | — | — |
-| AWT-001-CUST | — | cần update | — | — | — | — | — | — |
-
----
-
-## 4. OPERATION
-
-| ID | Ngày bắt đầu | Ngày kết thúc | Tiến độ 1 | Đơn vị 1 | Tiến độ 2 | Đơn vị 2 | Tiến độ 3 | Đơn vị 3 | Tiến độ 4 | Đơn vị 4 | Trung | Tài |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| THL-001-LEAD1 | — | — | 0 | website | — | — | — | — | — | — | 0% | 0% |
-| THL-001-LEAD2 | — | — | 0 | AI Agent | — | — | — | — | — | — | 0% | 0% |
-| TYH-001-LEAD1 | — | — | 0 | gói content | — | — | — | — | — | — | 0% | 0% |
-| TYH-001-LEAD2 | — | — | 0 | video | — | — | — | — | — | — | 0% | 0% |
-| KKS-001-LEAD1 | — | — | 0 | video/tháng | — | — | — | — | — | — | 0% | 0% |
-| NHA-001-CUST | — | — | — | cần update | — | — | — | — | — | — | — | — |
-| AWT-001-CUST | — | — | — | cần update | — | — | — | — | — | — | — | — |
-
----
-
-*Cập nhật: 2026-09-12*
-`;
-
-        const SCHEDULE_MD = `# CRM — Bảng Thanh Toán (Payment Schedule)
-
-> File sub-section Sale — liên kết đến CRM/crm-imind-clients.md qua ID.
-> Cập nhật tự động vào CRM chính: đợt thanh toán tiếp theo + thời hạn.
-
----
-
-## Bảng Thanh Toán Chi Tiết
-
-| ID | Đợt 1 (vnđ) | Hạn đợt 1 | Đợt 2 (vnđ) | Hạn đợt 2 | Đợt 3 (vnđ) | Hạn đợt 3 | Đợt 4 (vnđ) | Hạn đợt 4 | Đợt 5 (vnđ) | Hạn đợt 5 | Đợt 6 (vnđ) | Hạn đợt 6 | Đợt 7 (vnđ) | Hạn đợt 7 | Đợt 8 (vnđ) | Hạn đợt 8 | Đợt 9 (vnđ) | Hạn đợt 9 | Đợt 10 (vnđ) | Hạn đợt 10 | Đợt 11 (vnđ) | Hạn đợt 11 | Đợt 12 (vnđ) | Hạn đợt 12 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| THL-001-LEAD1 | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — |
-| THL-001-LEAD2 | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — |
-| TYH-001-LEAD1 | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — |
-| TYH-001-LEAD2 | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — |
-| KKS-001-LEAD1 | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — |
-| NHA-001-CUST | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — |
-| AWT-001-CUST | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | — |
-
----
-
-*File được tạo: 2026-09-12 | Cập nhật: 2026-09-12*
-`;
-
-        // ============================================
-        // CRM TMA LOGIC
-        // ============================================
-        let customers = [];
-        let saleSchedule = [];
-        let currentSection = 'hopdong';
-        
-        // Parse markdown into sections
-        function parseCRM(md) {
-            const sections = {};
-            let currentSection = null;
-            let currentTable = [];
-            
-            const lines = md.split('\n');
-            for (const line of lines) {
-                const sectionMatch = line.match(/^##\s+\d+\.\s+(.+)/);
-                if (sectionMatch) {
-                    if (currentSection && currentTable.length > 0) {
-                        sections[currentSection] = parseTable(currentTable);
-                    }
-                    currentSection = sectionMatch[1].trim();
-                    currentTable = [];
-                    continue;
-                }
-                
-                if (line.trim().startsWith('|') && line.includes('|')) {
-                    if (!line.match(/^\|[\s\-:|]+$/)) {
-                        currentTable.push(line);
-                    }
-                }
-            }
-            if (currentSection && currentTable.length > 0) {
-                sections[currentSection] = parseTable(currentTable);
-            }
-            
-            return sections;
+        function init() {
+            renderStats();
+            renderTable();
+            updateTimestamp();
         }
-        
-        // Parse table lines into array of objects
-        function parseTable(tableLines) {
-            if (tableLines.length < 2) return [];
-            
-            const parseLine = (line) => {
-                line = line.replace(/^\|+\s*/, '').replace(/\s*\|+$/, '');
-                return line.split('|').map(c => c.trim());
-            };
-            
-            const headers = parseLine(tableLines[0]);
-            const rows = [];
-            
-            for (let i = 1; i < tableLines.length; i++) {
-                const cells = parseLine(tableLines[i]);
-                if (cells.length === headers.length) {
-                    const row = {};
-                    headers.forEach((h, idx) => {
-                        row[h] = cells[idx] || '';
-                    });
-                    rows.push(row);
-                }
-            }
-            
-            return rows;
+
+        function parseDate(dateStr) {
+            if (!dateStr || dateStr === '—') return null;
+            const parts = dateStr.split('/');
+            if (parts.length !== 3) return null;
+            const [d, m, y] = parts;
+            return new Date(y, m - 1, d);
         }
-        
-        // Build customer objects from sections
-        function buildCustomers(sections) {
-            const hopDong = sections['HỢP ĐỒNG'] || [];
-            const sale = sections['SALE'] || [];
-            const order = sections['ORDER'] || [];
-            const operation = sections['OPERATION'] || [];
-            
-            const customers = [];
-            
-            for (const row of hopDong) {
-                const id = row['ID'] || '';
-                if (id.includes('-LEAD') || id.includes('-CUST') || id.includes('-AAA') || 
-                    id.includes('-15SOCIAL') || id.includes('-VIDAI30') || id.includes('-15SEO') ||
-                    id.includes('-Guideline') || id.includes('-MKT-')) {
-                    continue;
-                }
-                
-                const customer = {
-                    id: id,
-                    name: row['Tên doanh nghiệp / khách hàng'] || '',
-                    industry: row['Ngành'] || '',
-                    services: []
-                };
-                
-                const prefix = id + '-';
-                for (const subRow of hopDong) {
-                    const subId = subRow['ID'] || '';
-                    if (subId.startsWith(prefix)) {
-                        const service = {
-                            id: subId,
-                            name: subRow['Tên doanh nghiệp / khách hàng'] || '',
-                            industry: subRow['Ngành'] || '',
-                            ngayTiepNhan: subRow['Ngày tiếp nhận khách*'] || '',
-                            ngayBD: subRow['Ngày bắt đầu HĐ**'] || '',
-                            ngayKT: subRow['Ngày kết thúc HĐ**'] || '',
-                            chietKhau: subRow['Chiết khấu**'] || '',
-                            giaTruocCK: subRow['Giá trước CK**'] || '',
-                            giaSauCK: subRow['Giá sau CK (AI)'] || '',
-                            giaVAT: subRow['Giá VAT 8% (AI)'] || ''
-                        };
-                        
-                        const saleRow = sale.find(s => s['ID'] === subId);
-                        if (saleRow) {
-                            service.saleStage = saleRow['Giai đoạn Sale'] || '';
-                            service.saleAmount = saleRow['Số tiền đợt tiếp theo'] || '';
-                            service.saleDeadline = saleRow['Thời hạn đợt tiếp theo'] || '';
-                            service.saleNote = saleRow['Ghi chú thêm về khách hàng'] || '';
-                        }
-                        
-                        const orderRow = order.find(o => o['ID'] === subId);
-                        if (orderRow) {
-                            service.order = [
-                                { qty: orderRow['Số lượng 1'], unit: orderRow['Đơn vị 1'] },
-                                { qty: orderRow['Số lượng 2'], unit: orderRow['Đơn vị 2'] },
-                                { qty: orderRow['Số lượng 3'], unit: orderRow['Đơn vị 3'] },
-                                { qty: orderRow['Số lượng 4'], unit: orderRow['Đơn vị 4'] }
-                            ].filter(o => o.qty && o.qty !== '—' && o.unit && o.unit !== '—');
-                        }
-                        
-                        const opRow = operation.find(o => o['ID'] === subId);
-                        if (opRow) {
-                            service.opStart = opRow['Ngày bắt đầu'] || '';
-                            service.opEnd = opRow['Ngày kết thúc'] || '';
-                            service.progress = [
-                                { pct: opRow['Tiến độ 1'], unit: opRow['Đơn vị 1'] },
-                                { pct: opRow['Tiến độ 2'], unit: opRow['Đơn vị 2'] },
-                                { pct: opRow['Tiến độ 3'], unit: opRow['Đơn vị 3'] },
-                                { pct: opRow['Tiến độ 4'], unit: opRow['Đơn vị 4'] }
-                            ].filter(p => p.pct && p.pct !== '—' && p.unit && p.unit !== '—');
-                            service.trung = opRow['Trung'] || '';
-                            service.tai = opRow['Tài'] || '';
-                        }
-                        
-                        customer.services.push(service);
-                    }
-                }
-                
-                customers.push(customer);
-            }
-            
-            return customers;
-        }
-        
-        function loadData() {
-            const container = document.getElementById('tableContainer');
-            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Đang tải dữ liệu...</p></div>';
-            
-            try {
-                const crmSections = parseCRM(CRM_MD);
-                const schedSections = parseCRM(SCHEDULE_MD);
-                saleSchedule = schedSections['Bảng Thanh Toán Chi Tiết'] || [];
-                
-                customers = buildCustomers(crmSections);
-                
-                if (customers.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><p>Không tìm thấy dữ liệu</p></div>';
+
+        function applyQuickRange() {
+            const sel = document.getElementById('quickRange');
+            const today = new Date();
+            let from = new Date();
+            let to = new Date();
+
+            switch (sel.value) {
+                case '7': from.setDate(today.getDate() - 7); break;
+                case '14': from.setDate(today.getDate() - 14); break;
+                case '30': from.setDate(today.getDate() - 30); break;
+                case '90': from.setDate(today.getDate() - 90); break;
+                case 'thisWeek': from.setDate(today.getDate() - today.getDay()); break;
+                case 'thisMonth': from = new Date(today.getFullYear(), today.getMonth(), 1); break;
+                case 'lastMonth':
+                    from = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                    to = new Date(today.getFullYear(), today.getMonth(), 0);
+                    break;
+                default:
+                    sel.value = '';
+                    document.getElementById('fromDate').value = '';
+                    document.getElementById('toDate').value = '';
+                    renderStats();
+                    renderTable();
                     return;
-                }
-                
-                populateFilters();
-                renderStats();
-                renderTable();
-                updateTimestamp();
-            } catch (error) {
-                container.innerHTML = `<div class="error-msg">Lỗi: ${error.message}</div>`;
             }
-        }
-        
-        function populateFilters() {
-            const stageFilter = document.getElementById('stageFilter');
-            const industryFilter = document.getElementById('industryFilter');
-            
-            const stages = new Set();
-            const industries = new Set();
-            
-            customers.forEach(c => {
-                if (c.industry) industries.add(c.industry);
-                c.services.forEach(s => {
-                    if (s.saleStage) stages.add(s.saleStage);
-                });
-            });
-            
-            stageFilter.innerHTML = '<option value="">Tất cả</option>' + 
-                [...stages].sort().map(s => `<option value="${s}">${s}</option>`).join('');
-            industryFilter.innerHTML = '<option value="">Tất cả</option>' + 
-                [...industries].sort().map(i => `<option value="${i}">${i}</option>`).join('');
-        }
-        
-        function renderStats() {
-            const stats = document.getElementById('stats');
-            const total = customers.length;
-            const totalServices = customers.reduce((sum, c) => sum + c.services.length, 0);
-            
-            const stages = {};
-            customers.forEach(c => {
-                c.services.forEach(s => {
-                    const stage = s.saleStage || 'Unknown';
-                    stages[stage] = (stages[stage] || 0) + 1;
-                });
-            });
-            
-            let html = `<div class="stat-item"><div class="stat-value">${total}</div><div class="stat-label">Khách hàng</div></div>`;
-            html += `<div class="stat-item"><div class="stat-value">${totalServices}</div><div class="stat-label">Dịch vụ</div></div>`;
-            
-            const sortedStages = Object.entries(stages).sort((a, b) => b[1] - a[1]).slice(0, 3);
-            for (const [stage, count] of sortedStages) {
-                html += `<div class="stat-item"><div class="stat-value">${count}</div><div class="stat-label">${stage}</div></div>`;
-            }
-            stats.innerHTML = html;
-        }
-        
-        function showSection(section) {
-            currentSection = section;
-            document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
+
+            document.getElementById('fromDate').value = from.toISOString().slice(0, 10);
+            document.getElementById('toDate').value = to.toISOString().slice(0, 10);
+            renderStats();
             renderTable();
         }
-        
+
+        function renderStats() {
+            const stats = document.getElementById('stats');
+            const filtered = getFiltered();
+            const mainRows = filtered.filter(r => r.main);
+            const totalCustomers = mainRows.length;
+            const totalServices = filtered.filter(r => !r.main).length;
+
+            let html = '<div class="stat-item"><div class="stat-value">' + totalCustomers + '</div><div class="stat-label">Khách hàng</div></div>';
+            html += '<div class="stat-item"><div class="stat-value">' + totalServices + '</div><div class="stat-label">Dịch vụ</div></div>';
+
+            const byIndustry = {};
+            mainRows.forEach(r => { byIndustry[r.industry] = (byIndustry[r.industry] || 0) + 1; });
+            const sortedInd = Object.entries(byIndustry).sort((a, b) => b[1] - a[1]).slice(0, 3);
+            for (const [ind, cnt] of sortedInd) {
+                html += '<div class="stat-item"><div class="stat-value">' + cnt + '</div><div class="stat-label">' + ind + '</div></div>';
+            }
+
+            stats.innerHTML = html;
+        }
+
         function renderTable() {
             const container = document.getElementById('tableContainer');
-            const filtered = getFilteredCustomers();
-            
+            const filtered = getFiltered();
+
             if (filtered.length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>Không tìm thấy khách hàng</p></div>';
+                container.innerHTML = '<div class="empty-state"><p>Không tìm thấy dữ liệu</p></div>';
                 return;
             }
-            
+
             let html = '<table>';
-            
-            // Render based on current section
-            if (currentSection === 'hopdong') {
-                html += renderHopDongTable(filtered);
-            } else if (currentSection === 'sale') {
-                html += renderSaleTable(filtered);
-            } else if (currentSection === 'order') {
-                html += renderOrderTable(filtered);
-            } else if (currentSection === 'operation') {
-                html += renderOperationTable(filtered);
-            }
-            
-            html += '</table>';
+            html += '<thead>';
+            html += '<tr>';
+            html += '<th colspan="4" style="background:#334155;">KHÁCH HÀNG</th>';
+            html += '<th colspan="7" style="background:#7c3aed;">HỢP ĐỒNG</th>';
+            html += '<th colspan="1" style="background:#059669;">GĐ</th>';
+            html += '<th colspan="3" style="background:#059669;">ĐỢT 1</th>';
+            html += '<th colspan="3" style="background:#059669;">ĐỢT 2</th>';
+            html += '<th colspan="3" style="background:#059669;">ĐỢT 3</th>';
+            html += '<th colspan="10" style="background:#d97706;">ORDER</th>';
+            html += '<th colspan="6" style="background:#0891b2;">OP</th>';
+            html += '</tr>';
+            html += '<tr>';
+            html += '<th>ID</th><th>Tên</th><th>Ưu tiên</th><th>Ngành</th>';
+            html += '<th>Ngày TN</th><th>Ngày BĐ HĐ</th><th>Ngày KT HĐ</th>';
+            html += '<th>Giá trước CK</th><th>Chiết khấu</th><th>Giá sau CK</th><th>Giá tổng sau VAT</th>';
+            html += '<th>GĐ</th>';
+            html += '<th>Cần TT</th><th>Ngày TT</th><th>Trạng thái</th>';
+            html += '<th>Cần TT</th><th>Ngày TT</th><th>Trạng thái</th>';
+            html += '<th>Cần TT</th><th>Ngày TT</th><th>Trạng thái</th>';
+            html += '<th>ID</th><th>SL 1</th><th>Đơn vị 1</th><th>SL 2</th><th>Đơn vị 2</th>';
+            html += '<th>SL 3</th><th>Đơn vị 3</th><th>SL 4</th><th>Đơn vị 4</th><th>Tổng SL</th>';
+            html += '<th>Op BĐ</th><th>Op KT</th><th>Tiến độ</th><th>Trung</th><th>Tài</th><th>Ghi chú</th>';
+            html += '</tr></thead>';
+            html += '<tbody>';
+
+            filtered.forEach(function(r) {
+                const rowClass = r.main ? 'row-main' : 'row-sub';
+                const stageClass = 'stage-' + r.stage.replace(/\s+/g, '-');
+
+                html += '<tr class="' + rowClass + '">';
+                html += '<td>' + r.id + '</td>';
+                html += '<td>' + r.name + '</td>';
+                html += '<td>' + r.uutien + '</td>';
+                html += '<td>' + r.industry + '</td>';
+                html += '<td>' + r.ngayTN + '</td>';
+                html += '<td>' + r.ngayBD + '</td>';
+                html += '<td>' + r.ngayKT + '</td>';
+                html += '<td class="money">' + (r.giaTruocCK !== '—' ? formatMoney(r.giaTruocCK) + ' đ' : '—') + '</td>';
+                html += '<td>' + r.chietKhau + '</td>';
+                html += '<td class="money">' + (r.giaSauCK !== '—' ? formatMoney(r.giaSauCK) + ' đ' : '—') + '</td>';
+                html += '<td class="money">' + (r.vat !== '—' ? formatMoney(r.vat) + ' đ' : '—') + '</td>';
+                html += '<td><span class="stage-badge ' + stageClass + '">' + r.stage + '</span></td>';
+                html += '<td class="money">' + (r.dot1 !== '—' ? formatMoney(r.dot1) + ' đ' : '—') + '</td>';
+                html += '<td>' + r.dot1Date + '</td>';
+                html += '<td class="' + (r.dot1Status === 'chưa TT' ? 'status-unpaid' : 'status-paid') + '">' + r.dot1Status + '</td>';
+                html += '<td class="money">' + (r.dot2 !== '—' ? formatMoney(r.dot2) + ' đ' : '—') + '</td>';
+                html += '<td>' + r.dot2Date + '</td>';
+                html += '<td class="' + (r.dot2Status === 'chưa TT' ? 'status-unpaid' : 'status-paid') + '">' + r.dot2Status + '</td>';
+                html += '<td class="money">' + (r.dot3 !== '—' ? formatMoney(r.dot3) + ' đ' : '—') + '</td>';
+                html += '<td>' + r.dot3Date + '</td>';
+                html += '<td class="' + (r.dot3Status === 'chưa TT' ? 'status-unpaid' : 'status-paid') + '">' + r.dot3Status + '</td>';
+                html += '<td>' + r.id + '</td>';
+                html += '<td>' + r.sl1 + '</td><td>' + r.unit1 + '</td>';
+                html += '<td>' + r.sl2 + '</td><td>' + r.unit2 + '</td>';
+                html += '<td>' + r.sl3 + '</td><td>' + r.unit3 + '</td>';
+                html += '<td>' + r.sl4 + '</td><td>' + r.unit4 + '</td>';
+                html += '<td>' + r.tongSL + '</td>';
+                html += '<td>' + r.opBD + '</td><td>' + r.opKT + '</td>';
+                const pct = parseInt(r.tienDo);
+                if (!isNaN(pct)) {
+                    html += '<td><div>' + r.tienDo + '</div><div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div></td>';
+                } else {
+                    html += '<td>' + r.tienDo + '</td>';
+                }
+                html += '<td>' + r.trung + '</td>';
+                html += '<td>' + r.tai + '</td>';
+                html += '<td>' + r.note + '</td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
             container.innerHTML = html;
         }
-        
-        function renderHopDongTable(customers) {
-            let html = `
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên doanh nghiệp / khách hàng</th>
-                        <th>Ngành</th>
-                        <th>Ngày tiếp nhận</th>
-                        <th>Ngày BĐ HĐ</th>
-                        <th>Ngày KT HĐ</th>
-                        <th>Chiết khấu</th>
-                        <th>Giá trước CK</th>
-                        <th>Giá sau CK</th>
-                        <th>VAT 8%</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-            
-            customers.forEach(c => {
-                // Main row
-                html += `<tr class="row-main">`;
-                html += `<td colspan="10">${c.id} — ${c.name}</td>`;
-                html += `</tr>`;
-                
-                // Sub rows
-                c.services.forEach(s => {
-                    html += `<tr class="row-sub">`;
-                    html += `<td>${s.id}</td>`;
-                    html += `<td>${s.name}</td>`;
-                    html += `<td>${s.industry}</td>`;
-                    html += `<td>${s.ngayTiepNhan}</td>`;
-                    html += `<td>${s.ngayBD || '—'}</td>`;
-                    html += `<td>${s.ngayKT || '—'}</td>`;
-                    html += `<td>${s.chietKhau || '—'}</td>`;
-                    html += `<td class="money">${s.giaTruocCK && s.giaTruocCK !== '—' ? formatMoney(s.giaTruocCK) + ' đ' : '—'}</td>`;
-                    html += `<td class="money">${s.giaSauCK && s.giaSauCK !== '—' ? formatMoney(s.giaSauCK) + ' đ' : '—'}</td>`;
-                    html += `<td class="money">${s.giaVAT && s.giaVAT !== '—' ? formatMoney(s.giaVAT) + ' đ' : '—'}</td>`;
-                    html += `</tr>`;
-                });
-            });
-            
-            html += '</tbody>';
-            return html;
-        }
-        
-        function renderSaleTable(customers) {
-            let html = `
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên dịch vụ</th>
-                        <th>Giai đoạn</th>
-                        <th>Số tiền đợt tiếp</th>
-                        <th>Thời hạn</th>
-                        <th>Ghi chú</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-            
-            customers.forEach(c => {
-                html += `<tr class="row-main">`;
-                html += `<td colspan="6">${c.id} — ${c.name}</td>`;
-                html += `</tr>`;
-                
-                c.services.forEach(s => {
-                    const stageClass = s.saleStage ? 'stage-' + s.saleStage.replace(/\s+/g, '\\ ') : '';
-                    html += `<tr class="row-sub">`;
-                    html += `<td>${s.id}</td>`;
-                    html += `<td>${s.name}</td>`;
-                    html += `<td>${s.saleStage ? `<span class="stage-badge ${stageClass}">${s.saleStage}</span>` : '—'}</td>`;
-                    html += `<td class="money">${s.saleAmount && s.saleAmount !== '—' ? formatMoney(s.saleAmount) + ' đ' : '—'}</td>`;
-                    html += `<td>${s.saleDeadline || '—'}</td>`;
-                    html += `<td>${s.saleNote || '—'}</td>`;
-                    html += `</tr>`;
-                });
-            });
-            
-            html += '</tbody>';
-            return html;
-        }
-        
-        function renderOrderTable(customers) {
-            let html = `
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên dịch vụ</th>
-                        <th>Số lượng 1</th>
-                        <th>Đơn vị 1</th>
-                        <th>Số lượng 2</th>
-                        <th>Đơn vị 2</th>
-                        <th>Số lượng 3</th>
-                        <th>Đơn vị 3</th>
-                        <th>Số lượng 4</th>
-                        <th>Đơn vị 4</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-            
-            customers.forEach(c => {
-                html += `<tr class="row-main">`;
-                html += `<td colspan="10">${c.id} — ${c.name}</td>`;
-                html += `</tr>`;
-                
-                c.services.forEach(s => {
-                    const o = s.order || [];
-                    html += `<tr class="row-sub">`;
-                    html += `<td>${s.id}</td>`;
-                    html += `<td>${s.name}</td>`;
-                    html += `<td>${o[0]?.qty || '—'}</td>`;
-                    html += `<td>${o[0]?.unit || '—'}</td>`;
-                    html += `<td>${o[1]?.qty || '—'}</td>`;
-                    html += `<td>${o[1]?.unit || '—'}</td>`;
-                    html += `<td>${o[2]?.qty || '—'}</td>`;
-                    html += `<td>${o[2]?.unit || '—'}</td>`;
-                    html += `<td>${o[3]?.qty || '—'}</td>`;
-                    html += `<td>${o[3]?.unit || '—'}</td>`;
-                    html += `</tr>`;
-                });
-            });
-            
-            html += '</tbody>';
-            return html;
-        }
-        
-        function renderOperationTable(customers) {
-            let html = `
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên dịch vụ</th>
-                        <th>Ngày BĐ</th>
-                        <th>Ngày KT</th>
-                        <th>Tiến độ 1</th>
-                        <th>Tiến độ 2</th>
-                        <th>Tiến độ 3</th>
-                        <th>Tiến độ 4</th>
-                        <th>Trung</th>
-                        <th>Tài</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-            
-            customers.forEach(c => {
-                html += `<tr class="row-main">`;
-                html += `<td colspan="10">${c.id} — ${c.name}</td>`;
-                html += `</tr>`;
-                
-                c.services.forEach(s => {
-                    const p = s.progress || [];
-                    html += `<tr class="row-sub">`;
-                    html += `<td>${s.id}</td>`;
-                    html += `<td>${s.name}</td>`;
-                    html += `<td>${s.opStart || '—'}</td>`;
-                    html += `<td>${s.opEnd || '—'}</td>`;
-                    
-                    for (let i = 0; i < 4; i++) {
-                        if (p[i]) {
-                            const pctNum = parseInt(p[i].pct) || 0;
-                            html += `<td>
-                                <div>${p[i].pct} ${p[i].unit}</div>
-                                <div class="progress-bar"><div class="progress-fill" style="width:${pctNum}%"></div></div>
-                            </td>`;
-                        } else {
-                            html += `<td>—</td>`;
-                        }
-                    }
-                    
-                    html += `<td>${s.trung || '—'}</td>`;
-                    html += `<td>${s.tai || '—'}</td>`;
-                    html += `</tr>`;
-                });
-            });
-            
-            html += '</tbody>';
-            return html;
-        }
-        
-        function getFilteredCustomers() {
+
+        function getFiltered() {
             const search = document.getElementById('searchInput').value.toLowerCase();
-            const stage = document.getElementById('stageFilter').value;
-            const industry = document.getElementById('industryFilter').value;
-            
-            return customers.filter(c => {
-                const matchSearch = !search || 
-                    (c.name && c.name.toLowerCase().includes(search)) || 
-                    (c.id && c.id.toLowerCase().includes(search));
-                const matchIndustry = !industry || c.industry === industry;
-                const matchStage = !stage || c.services.some(s => s.saleStage === stage);
-                
-                return matchSearch && matchStage && matchIndustry;
+            const fromStr = document.getElementById('fromDate').value;
+            const toStr = document.getElementById('toDate').value;
+
+            let fromDate = null;
+            let toDate = null;
+            if (fromStr) {
+                const parts = fromStr.split('-');
+                fromDate = new Date(parts[0], parseInt(parts[1]) - 1, parts[2]);
+            }
+            if (toStr) {
+                const parts = toStr.split('-');
+                toDate = new Date(parts[0], parseInt(parts[1]) - 1, parts[2]);
+                toDate.setHours(23, 59, 59, 999);
+            }
+
+            return CRM_DATA.filter(function(r) {
+                const matchSearch = !search ||
+                    r.name.toLowerCase().includes(search) ||
+                    r.id.toLowerCase().includes(search);
+
+                let matchDate = true;
+                if (fromDate || toDate) {
+                    const dt = parseDate(r.ngayTN);
+                    if (dt) {
+                        if (fromDate && dt < fromDate) matchDate = false;
+                        if (toDate && dt > toDate) matchDate = false;
+                    } else {
+                        matchDate = false;
+                    }
+                }
+
+                return matchSearch && matchDate;
             });
         }
-        
+
         function formatMoney(value) {
             if (!value || value === '—' || value === '') return '—';
             const num = parseInt(value.toString().replace(/[.,]/g, ''));
             if (isNaN(num)) return value;
             return num.toLocaleString('vi-VN');
         }
-        
+
         function updateTimestamp() {
             document.getElementById('lastUpdated').textContent = 'Cập nhật: ' + new Date().toLocaleTimeString('vi-VN');
         }
-        
-        // Event listeners
-        document.getElementById('searchInput').addEventListener('input', renderTable);
-        document.getElementById('stageFilter').addEventListener('change', renderTable);
-        document.getElementById('industryFilter').addEventListener('change', renderTable);
-        
-        // Telegram WebApp
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            renderStats();
+            renderTable();
+        });
+        document.getElementById('fromDate').addEventListener('change', function() {
+            document.getElementById('quickRange').value = '';
+            renderStats();
+            renderTable();
+        });
+        document.getElementById('toDate').addEventListener('change', function() {
+            document.getElementById('quickRange').value = '';
+            renderStats();
+            renderTable();
+        });
+
         if (window.Telegram && window.Telegram.WebApp) {
             Telegram.WebApp.ready();
             Telegram.WebApp.expand();
         }
-        
-        // Initialize
-        loadData();
+
+        init();
     </script>
 </body>
 </html>

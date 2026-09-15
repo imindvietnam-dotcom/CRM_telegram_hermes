@@ -1,77 +1,63 @@
 # CRM — iMind AI Marketing
 
-> Cập nhật: 2026-09-12
+> Cập nhật: 2026-09-14
 > Người tạo: Mai (iMind Update)
 > Rules: `CRM/crm-rules.md`
-> Payment Schedule: `CRM/crm-sale-schedule.md`
 
 ---
 
-## 1. HỢP ĐỒNG
+## BẢNG HỢP ĐỒNG DUY NHẤT (SYNC VỚI INDEX.HTML)
 
-> `*` = Required Round 1 (sau khi tiếp nhận khách) | `**` = Required Round 2 (sau khi chốt báo giá & lên HĐ)
-> Main row = Tổng khách hàng | Subrow = Chi tiết dịch vụ
+> Bảng gộp tất cả: Khách hàng | Hợp đồng | Sale | Order | OP.
+> Main row = Khách hàng | Sub row = Dịch vụ.
 
-| ID | Tên doanh nghiệp / khách hàng | Ngành | Ngày tiếp nhận khách* | Ngày bắt đầu HĐ** | Ngày kết thúc HĐ** | Chiết khấu** | Giá trước CK** | Giá sau CK (AI) | Giá VAT 8% (AI) |
-|---|---|---|---|---|---|---|---|---|---|
-| **THL-001** | **Thành Lợi DentalLab** | **Y tế** | 10/09/2026 | — | — | — | — | — | — |
-| THL-001-LEAD1 | Website + SEO + tra cứu BH | Y tế | 10/09/2026 | — | — | — | — | — | — |
-| THL-001-LEAD2 | AI Agent hành chính | Y tế | 10/09/2026 | — | — | — | — | — | — |
-| **TYH-001** | **TY Health Supplements** | **Y tế** | 09/09/2026 | — | — | — | 44.000.000 | — | — |
-| TYH-001-LEAD1 | Content social (2 gói × 2.5tr) | Y tế | 09/09/2026 | — | — | — | 5.000.000 | — | — |
-| TYH-001-LEAD2 | Video AI (300 video × 130k) | Y tế | 09/09/2026 | — | — | — | 39.000.000 | — | — |
-| **KKS-001** | **Kim Khuê Beauty & Spa** | **Sắc đẹp / Thẩm mỹ** | 09/09/2026 | — | — | — | 5.000.000 | — | — |
-| KKS-001-LEAD1 | 30 video AI/tháng | Sắc đẹp / Thẩm mỹ | 09/09/2026 | — | — | — | 5.000.000 | — | — |
-| **NHA-001** | **Công ty TNHH công nghệ Nhà Sạch** | **Thiết bị gia dụng** | 11/09/2026 | — | — | — | — | — | — |
-| NHA-001-CUST | cần update | Thiết bị gia dụng | 11/09/2026 | — | — | — | — | — | — |
-| **AWT-001** | **Adt Wine & Art** | **Rượu vang** | 11/09/2026 | — | — | — | — | — | — |
-| AWT-001-CUST | Video AI hộp quà | Rượu vang | 11/09/2026 | — | — | — | — | — | — |
+### THL-001: Thành Lợi DentalLab
+
+| ID | Tên | Ưu tiên | Ngày TN | Ngày BĐ HĐ | Ngày KT HĐ | Giá trước CK | Chiết khấu | Giá sau CK | Giá tổng sau VAT | GĐ | Cần TT đợt 1 | Ngày TT đợt 1 | TT đợt 1 | Cần TT đợt 2 | Ngày TT đợt 2 | TT đợt 2 | Cần TT đợt 3 | Ngày TT đợt 3 | TT đợt 3 | ID | SL 1 | Đơn vị 1 | SL 2 | Đơn vị 2 | SL 3 | Đơn vị 3 | SL 4 | Đơn vị 4 | Tổng SL | Op BĐ | Op KT | Tiến độ | Trung | Tài | Ghi chú |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| THL-001 | Thành Lợi DentalLab | — | 10/09/2026 | — | — | — | — | — | — | Báo giá | 25.000.000 | 15/10/2026 | chưa TT | — | — | chưa TT | — | — | chưa TT | — | — | — | — | — | — | — | — | — | — | — | — | 0% | 0% | 0% | Tổng HĐ 25tr |
+| THL-001-LEAD1 | Xây website | 🔥🔥 | 10/09/2026 | — | — | — | — | — | — | Báo giá | — | 15/10/2026 | chưa TT | — | — | chưa TT | — | — | chưa TT | THL-001-LEAD1 | 1 | website | — | — | — | — | — | — | 1 | — | — | 0% | 0% | 0% | Website sập |
+| THL-001-LEAD2 | SEO (15 bài) | 🔥🔥 | 10/09/2026 | — | — | — | — | — | — | Báo giá | — | 15/10/2026 | chưa TT | — | — | chưa TT | — | — | chưa TT | THL-001-LEAD2 | 15 | bài SEO | — | — | — | — | — | — | 15 | — | — | 0% | 0% | 0% | — |
+| THL-001-LEAD3 | Tra cứu BH | 🔥 | 10/09/2026 | — | — | — | — | — | — | Báo giá | — | 15/10/2026 | chưa TT | — | — | chưa TT | — | — | chưa TT | THL-001-LEAD3 | 1 | tra cứu BH | — | — | — | — | — | — | 1 | — | — | 0% | 0% | 0% | — |
+| THL-001-LEAD4 | AI Agent hành chính | 🔥 | 10/09/2026 | — | — | — | — | — | — | Lead | — | — | chưa TT | — | — | chưa TT | — | — | chưa TT | THL-001-LEAD4 | 1 | AI Agent | — | — | — | — | — | — | 1 | — | — | 0% | 0% | 0% | Chờ xong website |
 
 ---
 
-## 2. SALE
+### TYH-001: TY Health Supplements
 
-> Bảng thanh toán chi tiết 12 đợt: `CRM/crm-sale-schedule.md`
-> CRM chính chỉ hiển thị **đợt tiếp theo chưa thanh toán** — tự advance khi đợt hiện tại đã thanh toán.
-> Default Giai đoạn = Lead. Tự advance: Thanh toán đợt 1 → "Thanh toán đợt 2", v.v.
-
-| ID | Giai đoạn Sale | Số tiền đợt tiếp theo | Thời hạn đợt tiếp theo | Ghi chú thêm về khách hàng |
-|---|---|---|---|---|
-| THL-001-LEAD1 | Báo giá | 25.000.000 | 15/10/2026 | Website sập — cần brief Dev. Next: Thu thập thông tin chi tiết |
-| THL-001-LEAD2 | Lead | — | — | Chờ triển khai xong Website mới tư vấn AI Agent |
-| TYH-001-LEAD1 | Lead | — | — | Kênh nội dung lộn xộn, fanpage bị flag. Next: Thu thập thông tin chi tiết |
-| KKS-001-LEAD1 | Lead | — | — | Bà chủ tự dựng, không đủ số lượng video TikTok. Next: Thu thập thông tin chi tiết |
-| NHA-001-LEAD1 | Lead | — | — | cần update |
-| AWT-001-LEAD1 | Lead | — | — | Cần video AI tạo sinh theo avatar người gửi |
+| ID | Tên | Ưu tiên | Ngày TN | Ngày BĐ HĐ | Ngày KT HĐ | Giá trước CK | Chiết khấu | Giá sau CK | Giá tổng sau VAT | GĐ | Cần TT đợt 1 | Ngày TT đợt 1 | TT đợt 1 | Cần TT đợt 2 | Ngày TT đợt 2 | TT đợt 2 | Cần TT đợt 3 | Ngày TT đợt 3 | TT đợt 3 | ID | SL 1 | Đơn vị 1 | SL 2 | Đơn vị 2 | SL 3 | Đơn vị 3 | SL 4 | Đơn vị 4 | Tổng SL | Op BĐ | Op KT | Tiến độ | Trung | Tài | Ghi chú |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| TYH-001 | TY Health Supplements | — | 09/09/2026 | — | — | 44.000.000 | — | — | — | Lead | — | — | chưa TT | — | — | chưa TT | — | — | chưa TT | — | — | — | — | — | — | — | — | — | — | — | — | — | 0% | 0% | 0% | Kênh lộn xộn |
+| TYH-001-LEAD1 | Content social (2 gói × 2.5tr) | 🔥🔥 | 09/09/2026 | — | — | 5.000.000 | — | — | — | Lead | — | — | chưa TT | — | — | chưa TT | — | — | chưa TT | TYH-001-LEAD1 | 2 | gói content/tháng | — | — | — | — | — | — | 2 | — | — | 0% | 0% | 0% | — |
+| TYH-001-LEAD2 | Video AI (300 video × 130k) | 🔥 | 09/09/2026 | — | — | 39.000.000 | — | — | — | Lead | — | — | chưa TT | — | — | chưa TT | — | — | chưa TT | TYH-001-LEAD2 | 300 | video AI (30-50s) | — | — | — | — | — | — | 300 | — | — | 0% | 0% | 0% | — |
 
 ---
 
-## 3. ORDER
+### KKS-001: Kim Khuê Beauty & Spa
 
-| ID | Số lượng 1 | Đơn vị 1 | Số lượng 2 | Đơn vị 2 | Số lượng 3 | Đơn vị 3 | Số lượng 4 | Đơn vị 4 |
-|---|---|---|---|---|---|---|---|---|
-| THL-001-LEAD1 | 1 | Website+SEO+tra cứu BH | — | — | — | — | — | — |
-| THL-001-LEAD2 | 1 | AI Agent hành chính | — | — | — | — | — | — |
-| TYH-001-LEAD1 | 2 | gói content/tháng | — | — | — | — | — | — |
-| TYH-001-LEAD2 | 300 | video AI (30-50s) | — | — | — | — | — | — |
-| KKS-001-LEAD1 | 30 | video AI/tháng | — | — | — | — | — | — |
-| NHA-001-CUST | — | cần update | — | — | — | — | — | — |
-| AWT-001-CUST | — | cần update | — | — | — | — | — | — |
+| ID | Tên | Ưu tiên | Ngày TN | Ngày BĐ HĐ | Ngày KT HĐ | Giá trước CK | Chiết khấu | Giá sau CK | Giá tổng sau VAT | GĐ | Cần TT đợt 1 | Ngày TT đợt 1 | TT đợt 1 | Cần TT đợt 2 | Ngày TT đợt 2 | TT đợt 2 | Cần TT đợt 3 | Ngày TT đợt 3 | TT đợt 3 | ID | SL 1 | Đơn vị 1 | SL 2 | Đơn vị 2 | SL 3 | Đơn vị 3 | SL 4 | Đơn vị 4 | Tổng SL | Op BĐ | Op KT | Tiến độ | Trung | Tài | Ghi chú |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| KKS-001 | Kim Khuê Beauty & Spa | — | 09/09/2026 | — | — | 5.000.000 | — | — | — | Lead | — | — | chưa TT | — | — | chưa TT | — | — | chưa TT | 30 | 30 | video AI/tháng | — | — | — | — | — | — | 30 | — | — | 0% | 0% | 0% | Bà chủ tự dựng |
+| KKS-001-LEAD1 | 30 video AI/tháng | 🔥 | 09/09/2026 | — | — | 5.000.000 | — | — | — | Lead | — | — | chưa TT | — | — | chưa TT | — | — | chưa TT | KKS-001-LEAD1 | 30 | video AI/tháng | — | — | — | — | — | — | 30 | — | — | 0% | 0% | 0% | — |
 
 ---
 
-## 4. OPERATION
+### NHA-001: Công ty TNHH công nghệ Nhà Sạch
 
-| ID | Ngày bắt đầu | Ngày kết thúc | Tiến độ 1 | Đơn vị 1 | Tiến độ 2 | Đơn vị 2 | Tiến độ 3 | Đơn vị 3 | Tiến độ 4 | Đơn vị 4 | Trung | Tài |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| THL-001-LEAD1 | — | — | 0 | website | — | — | — | — | — | — | 0% | 0% |
-| THL-001-LEAD2 | — | — | 0 | AI Agent | — | — | — | — | — | — | 0% | 0% |
-| TYH-001-LEAD1 | — | — | 0 | gói content | — | — | — | — | — | — | 0% | 0% |
-| TYH-001-LEAD2 | — | — | 0 | video | — | — | — | — | — | — | 0% | 0% |
-| KKS-001-LEAD1 | — | — | 0 | video/tháng | — | — | — | — | — | — | 0% | 0% |
-| NHA-001-CUST | — | — | — | cần update | — | — | — | — | — | — | — | — |
-| AWT-001-CUST | — | — | — | cần update | — | — | — | — | — | — | — | — |
+| ID | Tên | Ưu tiên | Ngày TN | Ngày BĐ HĐ | Ngày KT HĐ | Giá trước CK | Chiết khấu | Giá sau CK | Giá tổng sau VAT | GĐ | Cần TT đợt 1 | Ngày TT đợt 1 | TT đợt 1 | Cần TT đợt 2 | Ngày TT đợt 2 | TT đợt 2 | Cần TT đợt 3 | Ngày TT đợt 3 | TT đợt 3 | ID | SL 1 | Đơn vị 1 | SL 2 | Đơn vị 2 | SL 3 | Đơn vị 3 | SL 4 | Đơn vị 4 | Tổng SL | Op BĐ | Op KT | Tiến độ | Trung | Tài | Ghi chú |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| NHA-001 | Công ty TNHH công nghệ Nhà Sạch | — | 11/09/2026 | — | — | — | — | — | — | Lead | — | — | chưa TT | — | — | chưa TT | — | — | chưa TT | — | — | cần update | — | — | — | — | — | — | — | — | — | — | — | — | — | cần update |
+| NHA-001-CUST | cần update | — | 11/09/2026 | — | — | — | — | — | — | Lead | — | — | chưa TT | — | — | chưa TT | — | — | chưa TT | NHA-001-CUST | — | cần update | — | — | — | — | — | — | — | — | — | — | — | — | — | cần update |
 
 ---
 
-*Cập nhật: 2026-09-12*
+### AWT-001: Adt Wine & Art
+
+| ID | Tên | Ưu tiên | Ngày TN | Ngày BĐ HĐ | Ngày KT HĐ | Giá trước CK | Chiết khấu | Giá sau CK | Giá tổng sau VAT | GĐ | Cần TT đợt 1 | Ngày TT đợt 1 | TT đợt 1 | Cần TT đợt 2 | Ngày TT đợt 2 | TT đợt 2 | Cần TT đợt 3 | Ngày TT đợt 3 | TT đợt 3 | ID | SL 1 | Đơn vị 1 | SL 2 | Đơn vị 2 | SL 3 | Đơn vị 3 | SL 4 | Đơn vị 4 | Tổng SL | Op BĐ | Op KT | Tiến độ | Trung | Tài | Ghi chú |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| AWT-001 | Adt Wine & Art | — | 11/09/2026 | — | — | — | — | — | — | Lead | — | — | chưa TT | — | — | chưa TT | — | — | chưa TT | — | — | cần update | — | — | — | — | — | — | — | — | — | — | — | — | — | Video AI avatar |
+| AWT-001-CUST | Video AI hộp quà | — | 11/09/2026 | — | — | — | — | — | — | Lead | — | — | chưa TT | — | — | chưa TT | — | — | chưa TT | AWT-001-CUST | — | cần update | — | — | — | — | — | — | — | — | — | — | — | — | — | Video AI avatar |
+
+---
+
+*Cập nhật: 2026-09-14 | Source of truth: tma-crm/index.html*
